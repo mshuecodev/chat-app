@@ -3,8 +3,8 @@ import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from "@/comp
 import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control"
 import { Heading } from "@/components/ui/heading"
 import { HStack } from "@/components/ui/hstack"
-import { CheckIcon } from "@/components/ui/icon"
-import { Input, InputField, InputSlot } from "@/components/ui/input"
+import { CheckIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon"
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
 import { LinkText } from "@/components/ui/link"
 import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
@@ -197,14 +197,14 @@ const LoginWithLeftBackground = () => {
 									}
 								}
 							}}
-							render={({ field: { onChange, onBlur, value } }) => (
+							render={({ field }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
 								<Input>
 									<InputField
 										type={showPassword ? "text" : "password"}
 										placeholder="Enter password"
-										value={value}
-										onChangeText={onChange}
-										onBlur={onBlur}
+										value={field.value}
+										onChangeText={field.onChange}
+										onBlur={field.onBlur}
 										onSubmitEditing={handleKeyPress}
 										returnKeyType="done"
 									/>
@@ -212,7 +212,7 @@ const LoginWithLeftBackground = () => {
 										onPress={handleState}
 										className="pr-3"
 									>
-										{/* <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} /> */}
+										<InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
 									</InputSlot>
 								</Input>
 							)}
