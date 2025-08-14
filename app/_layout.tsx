@@ -4,6 +4,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 import { useFonts } from "expo-font"
 import { Slot } from "expo-router"
 import "react-native-reanimated"
+import "../global.css"
 
 import { useColorScheme } from "@/hooks/useColorScheme"
 

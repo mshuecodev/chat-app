@@ -3,8 +3,8 @@ import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from "@/comp
 import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control"
 import { Heading } from "@/components/ui/heading"
 import { HStack } from "@/components/ui/hstack"
-import { ArrowLeftIcon, CheckIcon, EyeIcon, EyeOffIcon, Icon } from "@/components/ui/icon"
-import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
+import { CheckIcon } from "@/components/ui/icon"
+import { Input, InputField, InputSlot } from "@/components/ui/input"
 import { LinkText } from "@/components/ui/link"
 import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
@@ -115,11 +115,11 @@ const LoginWithLeftBackground = () => {
 						router.back()
 					}}
 				>
-					<Icon
+					{/* <Icon
 						as={ArrowLeftIcon}
 						className="md:hidden text-background-800"
 						size="xl"
-					/>
+					/> */}
 				</Pressable>
 				<VStack>
 					<Heading
@@ -212,7 +212,7 @@ const LoginWithLeftBackground = () => {
 										onPress={handleState}
 										className="pr-3"
 									>
-										<InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+										{/* <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} /> */}
 									</InputSlot>
 								</Input>
 							)}
