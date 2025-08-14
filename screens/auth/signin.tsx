@@ -10,10 +10,8 @@ import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
-import { zodResolver } from "@hookform/resolvers/zod"
-// import Link from "@unitools/link"
-// import useRouter from "@unitools/router"
 import { AntDesign } from "@expo/vector-icons"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useRouter } from "expo-router"
 import { AlertTriangle } from "lucide-react-native"
 import React, { useState } from "react"
@@ -272,7 +270,6 @@ const LoginWithLeftBackground = () => {
 							size={20}
 							color="#4285F4"
 						/>
-						{/* <ButtonIcon as={GoogleIcon} /> */}
 					</Button>
 				</VStack>
 				<HStack
