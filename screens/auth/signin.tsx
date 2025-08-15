@@ -131,7 +131,7 @@ const LoginWithLeftBackground = () => {
 							name="email"
 							control={control}
 							rules={{
-								validate: async (value) => {
+								validate: async (value: any) => {
 									try {
 										await loginSchema.parseAsync({ email: value })
 										return true
@@ -140,13 +140,13 @@ const LoginWithLeftBackground = () => {
 									}
 								}
 							}}
-							render={({ field: { onChange, onBlur, value } }) => (
+							render={({ field }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
 								<Input>
 									<InputField
 										placeholder="Enter email"
-										value={value}
-										onChangeText={onChange}
-										onBlur={onBlur}
+										value={field.value}
+										onChangeText={field.onChange}
+										onBlur={field.onBlur}
 										onSubmitEditing={handleKeyPress}
 										returnKeyType="done"
 									/>
@@ -171,7 +171,7 @@ const LoginWithLeftBackground = () => {
 							name="password"
 							control={control}
 							rules={{
-								validate: async (value) => {
+								validate: async (value: any) => {
 									try {
 										await loginSchema.parseAsync({ password: value })
 										return true
@@ -210,12 +210,12 @@ const LoginWithLeftBackground = () => {
 							name="rememberme"
 							defaultValue={false}
 							control={control}
-							render={({ field: { onChange, value } }) => (
+							render={({ field }: { field: { onChange: (checked: boolean) => void; value: boolean } }) => (
 								<Checkbox
 									size="sm"
 									value="Remember me"
-									isChecked={value}
-									onChange={onChange}
+									isChecked={field.value}
+									onChange={field.onChange}
 									aria-label="Remember me"
 								>
 									<CheckboxIndicator>
@@ -226,7 +226,7 @@ const LoginWithLeftBackground = () => {
 							)}
 						/>
 						<Link
-							href="/"
+							href="/(auth)/sign-in"
 							// href="/auth/forgot-password"
 						>
 							<LinkText className="font-medium text-sm text-primary-700 group-hover/link:text-primary-600">Forgot Password?</LinkText>
