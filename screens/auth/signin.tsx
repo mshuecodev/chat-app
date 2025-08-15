@@ -22,21 +22,6 @@ import { z } from "zod"
 import { AuthLayout } from "./layout"
 // import { GoogleIcon } from "./assets/icons/google"
 
-const USERS = [
-	{
-		email: "gabrial@gmail.com",
-		password: "Gabrial@123"
-	},
-	{
-		email: "tom@gmail.com",
-		password: "Tom@123"
-	},
-	{
-		email: "thomas@gmail.com",
-		password: "Thomas@1234"
-	}
-]
-
 const loginSchema = z.object({
 	email: z.string().min(1, "Email is required").email(),
 	password: z.string().min(1, "Password is required"),
@@ -80,7 +65,7 @@ const LoginWithLeftBackground = () => {
 				)
 			})
 			reset()
-			router.replace("/(app)/(tabs)") // Redirect to protected tabs screen
+			router.replace("/(app)/(tabs)/chat") // Redirect to protected tabs screen
 		} catch (error: any) {
 			if (error.message === "Invalid credentials") {
 				setValidated({ emailValid: false, passwordValid: false })
@@ -253,8 +238,8 @@ const LoginWithLeftBackground = () => {
 					space="lg"
 				>
 					<Button
-						variant="solid"
-						color="error"
+						size="md"
+						// variant="outline"
 						className="w-full"
 						onPress={handleSubmit(onSubmit)}
 					>

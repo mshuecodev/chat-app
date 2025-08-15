@@ -14,9 +14,8 @@ type AuthState = {
 
 // Dummy user data for demonstration purposes
 const DUMMY_USERS = [
-	{ id: "1", email: "gabrial@gmail.com", password: "Gabrial@123", name: "Gabrial" },
-	{ id: "2", email: "tom@gmail.com", password: "Tom@123", name: "Tom" },
-	{ id: "3", email: "thomas@gmail.com", password: "Thomas@1234", name: "Thomas" }
+	{ id: "1", email: "admin@gmail.com", password: "admin123", name: "Admin Check" },
+	{ id: "2", email: "test@gmail.com", password: "test123", name: "John Doe" }
 ]
 
 // Dummy login function

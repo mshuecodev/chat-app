@@ -10,7 +10,7 @@ export * from "./button"
 // export * from './card';
 // export * from "./center"
 export * from "./checkbox"
-// export * from "./divider"
+export * from "./divider"
 // export * from "./fab"
 // export * from './flat-list';
 export * from "./form-control"
@@ -39,7 +39,7 @@ export * from "./pressable"
 // export * from './slider';
 // export * from "./spinner"
 // export * from './status-bar';
-// export * from './switch';
+export * from "./switch"
 export * from "./text"
 // export * from './textarea';
 export * from "./toast"

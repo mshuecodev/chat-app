@@ -5,15 +5,15 @@ export default function TabsLayout() {
 		<Tabs>
 			<Tabs.Screen
 				name="chat"
-				options={{ title: "Chat" }}
+				options={{ headerShown: false }}
 			/>
 			<Tabs.Screen
 				name="contacts"
-				options={{ title: "Contacts" }}
+				options={{ headerShown: false }}
 			/>
 			<Tabs.Screen
 				name="settings"
-				options={{ title: "Settings" }}
+				options={{ headerShown: false }}
 			/>
 		</Tabs>
 	)
