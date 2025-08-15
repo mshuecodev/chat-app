@@ -1,43 +1,38 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Tabs } from "expo-router"
+import { useMemo } from "react"
 import { useWindowDimensions } from "react-native"
 
 export default function TabsLayout() {
 	const { width } = useWindowDimensions()
 	const isLargeScreen = width >= 768 // Tablet & Web breakpoint
 
+	const screenOptions = useMemo(
+		() => ({
+			tabBarShowLabel: false,
+			tabBarActiveTintColor: "#2563eb",
+			tabBarInactiveTintColor: "#64748b",
+			tabBarLabelStyle: {
+				fontSize: isLargeScreen ? 16 : 12
+			},
+			tabBarIconStyle: {
+				marginBottom: isLargeScreen ? 0 : -2
+			},
+			tabBarStyle: {
+				height: isLargeScreen ? 70 : 60,
+				paddingHorizontal: isLargeScreen ? 20 : 10
+			},
+			tabBarItemStyle: {
+				justifyContent: "center",
+				alignItems: "center"
+			},
+			headerShown: false
+		}),
+		[isLargeScreen]
+	)
+
 	return (
-		<Tabs
-			screenOptions={{
-				tabBarShowLabel: false,
-				tabBarActiveTintColor: "#2563eb",
-				tabBarInactiveTintColor: "#64748b",
-				tabBarLabelStyle: {
-					fontSize: isLargeScreen ? 16 : 12 // Bigger labels on large screen
-				},
-				tabBarIconStyle: {
-					marginBottom: isLargeScreen ? 0 : -2
-				},
-				tabBarStyle: {
-					height: isLargeScreen ? 70 : 60,
-					paddingHorizontal: isLargeScreen ? 20 : 10
-				},
-
-				// tabBarStyle: {
-				// 	height: 70, // slightly taller for tap area
-				// 	paddingBottom: 12, // center icon vertically
-				// 	paddingTop: 12,
-				// 	backgroundColor: "#f8fafc",
-				// 	borderTopWidth: 0
-				// },
-				tabBarItemStyle: {
-					justifyContent: "center", // center icon
-					alignItems: "center"
-				},
-
-				headerShown: false
-			}}
-		>
+		<Tabs screenOptions={screenOptions}>
 			<Tabs.Screen
 				name="chat/index"
 				options={{

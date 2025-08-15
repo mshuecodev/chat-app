@@ -10,19 +10,28 @@ import "../global.css"
 
 import { useColorScheme } from "@/hooks/useColorScheme"
 
-function InnerRootLayout() {
+function ThemedProviders({ children }: { children: React.ReactNode }) {
 	const { darkMode } = useTheme()
-
 	return (
 		<GluestackUIProvider mode={darkMode ? "dark" : "light"}>
-			<ThemeProvider value={darkMode ? DarkTheme : DefaultTheme}>
-				<AuthProvider>
-					<Slot />
-				</AuthProvider>
-			</ThemeProvider>
+			<ThemeProvider value={darkMode ? DarkTheme : DefaultTheme}>{children}</ThemeProvider>
 		</GluestackUIProvider>
 	)
 }
+
+// function InnerRootLayout() {
+// 	const { darkMode } = useTheme()
+
+// 	return (
+// 		<GluestackUIProvider mode={darkMode ? "dark" : "light"}>
+// 			<ThemeProvider value={darkMode ? DarkTheme : DefaultTheme}>
+// 				<AuthProvider>
+// 					<Slot />
+// 				</AuthProvider>
+// 			</ThemeProvider>
+// 		</GluestackUIProvider>
+// 	)
+// }
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
@@ -37,7 +46,12 @@ export default function RootLayout() {
 
 	return (
 		<AppThemeProvider>
-			<InnerRootLayout />
+			{/* <InnerRootLayout /> */}
+			<ThemedProviders>
+				<AuthProvider>
+					<Slot />
+				</AuthProvider>
+			</ThemedProviders>
 		</AppThemeProvider>
 	)
 }

@@ -1,16 +1,16 @@
 import { Avatar, Button, ButtonText, Divider, HStack, Switch, Text, VStack } from "@/components/ui"
 import { useAuth } from "@/providers/AuthProvider"
 import { useTheme } from "@/providers/ThemeProvider"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 export default function SettingsScreen() {
 	const { user, signOut } = useAuth()
 	const { darkMode, toggleTheme } = useTheme()
 	const [notifications, setNotifications] = useState(true)
 
-	const handleToggleTheme = useCallback(() => {
-		toggleTheme()
-	}, [toggleTheme])
+	// const handleToggleTheme = useCallback(() => {
+	// 	toggleTheme()
+	// }, [toggleTheme])
 
 	return (
 		<VStack
@@ -68,7 +68,7 @@ export default function SettingsScreen() {
 					<Text size="md">Dark Mode</Text>
 					<Switch
 						value={darkMode}
-						onValueChange={handleToggleTheme}
+						onValueChange={toggleTheme}
 					/>
 				</HStack>
 				<Divider />
