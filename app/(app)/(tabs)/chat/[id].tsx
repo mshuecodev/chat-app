@@ -2,7 +2,14 @@ import { Avatar, Button, ButtonText, HStack, Input, InputField, Text, VStack } f
 import { useLocalSearchParams } from "expo-router"
 import { Key, useState } from "react"
 
-const DUMMY_MESSAGES = {
+type Message = {
+	id: number
+	sender: string
+	text: string
+	avatar: string
+}
+
+const DUMMY_MESSAGES: Record<string, Message[]> = {
 	"1": [
 		{ id: 1, sender: "Gabrial", text: "Hi there!", avatar: "https://i.pravatar.cc/150?img=1" },
 		{ id: 2, sender: "You", text: "Hello Gabrial!", avatar: "https://i.pravatar.cc/150?img=3" }

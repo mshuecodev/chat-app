@@ -1,10 +1,12 @@
 import * as SecureStore from "expo-secure-store"
+import { Platform } from "react-native"
 
 const ACCESS_KEY = "access_token" as const
 const REFRESH_KEY = "refresh_token" as const
 const USER_KEY = "auth_user" as const
 
-const isWeb = typeof window !== "undefined"
+// const isWeb = typeof window !== "undefined"
+const isWeb = Platform.OS === "web"
 
 const webStorage = {
 	getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),

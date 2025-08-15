@@ -67,6 +67,7 @@ const LoginWithLeftBackground = () => {
 			reset()
 			router.replace("/(app)/(tabs)/chat") // Redirect to protected tabs screen
 		} catch (error: any) {
+			console.log("Login error:", error)
 			if (error.message === "Invalid credentials") {
 				setValidated({ emailValid: false, passwordValid: false })
 			}

@@ -93,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const dummySignIn = async (email: string, password: string) => {
 		const { accessToken, refreshToken: rToken, user } = await dummyLogin(email, password)
+		console.log("Dummy sign in successful:", user)
 		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(rToken), storage.setUser(user)])
 		setState({ user, accessToken, isBootstrapping: false })
 	}
