@@ -1,3 +1,4 @@
+import { useTheme } from "@/providers/ThemeProvider"
 import { Ionicons } from "@expo/vector-icons"
 import { Tabs } from "expo-router"
 import { useMemo } from "react"
@@ -6,33 +7,40 @@ import { useWindowDimensions } from "react-native"
 export default function TabsLayout() {
 	const { width } = useWindowDimensions()
 	const isLargeScreen = width >= 768 // Tablet & Web breakpoint
+	const { darkMode } = useTheme()
 
-	const screenOptions = useMemo(
+	const themeColors = useMemo(
 		() => ({
-			tabBarShowLabel: false,
-			tabBarActiveTintColor: "#2563eb",
-			tabBarInactiveTintColor: "#64748b",
-			tabBarLabelStyle: {
-				fontSize: isLargeScreen ? 16 : 12
-			},
-			tabBarIconStyle: {
-				marginBottom: isLargeScreen ? 0 : -2
-			},
-			tabBarStyle: {
-				height: isLargeScreen ? 70 : 60,
-				paddingHorizontal: isLargeScreen ? 20 : 10
-			},
-			tabBarItemStyle: {
-				justifyContent: "center",
-				alignItems: "center"
-			},
-			headerShown: false
+			active: darkMode ? "#60a5fa" : "#2563eb",
+			inactive: darkMode ? "#94a3b8" : "#64748b",
+			background: darkMode ? "#0f172a" : "#f8fafc"
 		}),
-		[isLargeScreen]
+		[darkMode]
 	)
 
 	return (
-		<Tabs screenOptions={screenOptions}>
+		<Tabs
+			screenOptions={{
+				tabBarShowLabel: false,
+				tabBarActiveTintColor: themeColors.active,
+				tabBarInactiveTintColor: themeColors.inactive,
+				tabBarStyle: {
+					backgroundColor: themeColors.background,
+					height: isLargeScreen ? 70 : 60
+					// paddingHorizontal: isLargeScreen ? 20 : 10,
+					// borderTopWidth: 0
+					// paddingBottom: 10
+				},
+				// tabBarItemStyle: {
+				// 	justifyContent: "center",
+				// 	alignItems: "center"
+				// },
+				// tabBarIconStyle: {
+				// 	marginBottom: isLargeScreen ? 0 : -2
+				// },
+				headerShown: false
+			}}
+		>
 			<Tabs.Screen
 				name="chat/index"
 				options={{

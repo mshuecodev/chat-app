@@ -19,20 +19,6 @@ function ThemedProviders({ children }: { children: React.ReactNode }) {
 	)
 }
 
-// function InnerRootLayout() {
-// 	const { darkMode } = useTheme()
-
-// 	return (
-// 		<GluestackUIProvider mode={darkMode ? "dark" : "light"}>
-// 			<ThemeProvider value={darkMode ? DarkTheme : DefaultTheme}>
-// 				<AuthProvider>
-// 					<Slot />
-// 				</AuthProvider>
-// 			</ThemeProvider>
-// 		</GluestackUIProvider>
-// 	)
-// }
-
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
 	const [loaded] = useFonts({
@@ -46,7 +32,6 @@ export default function RootLayout() {
 
 	return (
 		<AppThemeProvider>
-			{/* <InnerRootLayout /> */}
 			<ThemedProviders>
 				<AuthProvider>
 					<Slot />
