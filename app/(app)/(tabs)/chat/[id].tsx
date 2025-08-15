@@ -1,14 +1,22 @@
 import { Avatar, Button, ButtonText, HStack, Input, InputField, Text, VStack } from "@/components/ui"
-import { useState } from "react"
+import { useLocalSearchParams } from "expo-router"
+import { Key, useState } from "react"
 
-const DUMMY_MESSAGES = [
-	{ id: 1, sender: "Gabrial", text: "Hi there!", avatar: "https://i.pravatar.cc/150?img=1" },
-	{ id: 2, sender: "Tom", text: "Hello! How are you?", avatar: "https://i.pravatar.cc/150?img=2" },
-	{ id: 3, sender: "Gabrial", text: "I'm good, thanks!", avatar: "https://i.pravatar.cc/150?img=1" }
-]
+const DUMMY_MESSAGES = {
+	"1": [
+		{ id: 1, sender: "Gabrial", text: "Hi there!", avatar: "https://i.pravatar.cc/150?img=1" },
+		{ id: 2, sender: "You", text: "Hello Gabrial!", avatar: "https://i.pravatar.cc/150?img=3" }
+	],
+	"2": [
+		{ id: 1, sender: "Tom", text: "Hello!", avatar: "https://i.pravatar.cc/150?img=2" },
+		{ id: 2, sender: "You", text: "Hi Tom!", avatar: "https://i.pravatar.cc/150?img=3" }
+	]
+}
 
-export default function ChatScreen() {
-	const [messages, setMessages] = useState(DUMMY_MESSAGES)
+export default function ChatDetailScreen() {
+	const { id } = useLocalSearchParams()
+	const chatId = String(id)
+	const [messages, setMessages] = useState(DUMMY_MESSAGES[chatId] || [])
 	const [input, setInput] = useState("")
 
 	const handleSend = () => {
@@ -40,7 +48,7 @@ export default function ChatScreen() {
 				className="flex-1"
 				space="md"
 			>
-				{messages.map((msg) => (
+				{messages.map((msg: { id: Key | null | undefined; sender: unknown; avatar: any; text: unknown }) => (
 					<HStack
 						key={msg.id}
 						space="sm"

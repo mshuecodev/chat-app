@@ -18,8 +18,9 @@ export default function TabsLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="chat"
+				name="chat/index"
 				options={{
+					title: "Chats",
 					tabBarIcon: ({ color, size }) => (
 						<Ionicons
 							name="chatbubble-ellipses-outline"
@@ -32,6 +33,7 @@ export default function TabsLayout() {
 			<Tabs.Screen
 				name="contacts"
 				options={{
+					title: "Contacts",
 					tabBarIcon: ({ color, size }) => (
 						<Ionicons
 							name="people-outline"
@@ -44,6 +46,7 @@ export default function TabsLayout() {
 			<Tabs.Screen
 				name="settings"
 				options={{
+					title: "Settings",
 					tabBarIcon: ({ color, size }) => (
 						<Ionicons
 							name="settings-outline"
@@ -51,6 +54,12 @@ export default function TabsLayout() {
 							color={color}
 						/>
 					)
+				}}
+			/>
+			<Tabs.Screen
+				name="chat/[id]"
+				options={{
+					href: null
 				}}
 			/>
 		</Tabs>
