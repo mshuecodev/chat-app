@@ -10,6 +10,7 @@ import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
+import { useAuth } from "@/providers/AuthProvider"
 import { AntDesign } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useRouter } from "expo-router"
@@ -55,38 +56,37 @@ const LoginWithLeftBackground = () => {
 	})
 
 	const toast = useToast()
+	const { dummySignIn } = useAuth()
+
 	const [validated, setValidated] = useState({
 		emailValid: true,
 		passwordValid: true
 	})
+	const [showPassword, setShowPassword] = useState(false)
 
-	const onSubmit = (data: LoginSchemaType) => {
-		const user = USERS.find((element) => element.email === data.email)
-		if (user) {
-			if (user.password !== data.password) setValidated({ emailValid: true, passwordValid: false })
-			else {
-				setValidated({ emailValid: true, passwordValid: true })
-				toast.show({
-					placement: "bottom right",
-					render: ({ id }) => {
-						return (
-							<Toast
-								nativeID={id}
-								variant="outline"
-								action="success"
-							>
-								<ToastTitle>Logged in successfully!</ToastTitle>
-							</Toast>
-						)
-					}
-				})
-				reset()
+	const onSubmit = async (data: LoginSchemaType) => {
+		try {
+			await dummySignIn(data.email, data.password)
+			toast.show({
+				placement: "bottom right",
+				render: ({ id }) => (
+					<Toast
+						nativeID={id}
+						variant="outline"
+						action="success"
+					>
+						<ToastTitle>Logged in successfully!</ToastTitle>
+					</Toast>
+				)
+			})
+			reset()
+			router.replace("/(app)/(tabs)") // Redirect to protected tabs screen
+		} catch (error: any) {
+			if (error.message === "Invalid credentials") {
+				setValidated({ emailValid: false, passwordValid: false })
 			}
-		} else {
-			setValidated({ emailValid: false, passwordValid: true })
 		}
 	}
-	const [showPassword, setShowPassword] = useState(false)
 
 	const handleState = () => {
 		setShowPassword((showState) => {
@@ -126,7 +126,7 @@ const LoginWithLeftBackground = () => {
 					>
 						Log in
 					</Heading>
-					<Text>Login to start using gluestack</Text>
+					{/* <Text>Login to start using gluestack</Text> */}
 				</VStack>
 			</VStack>
 			<VStack className="w-full">
@@ -253,6 +253,8 @@ const LoginWithLeftBackground = () => {
 					space="lg"
 				>
 					<Button
+						variant="solid"
+						color="error"
 						className="w-full"
 						onPress={handleSubmit(onSubmit)}
 					>
@@ -277,10 +279,7 @@ const LoginWithLeftBackground = () => {
 					space="sm"
 				>
 					<Text size="md">Don't have an account?</Text>
-					<Link
-						href="/"
-						// href="/auth/signup"
-					>
+					<Link href="/(auth)/sign-up">
 						<LinkText
 							className="font-medium text-primary-700 group-hover/link:text-primary-600  group-hover/pressed:text-primary-700"
 							size="md"

@@ -12,6 +12,38 @@ type AuthState = {
 	isBootstrapping: boolean
 }
 
+// Dummy user data for demonstration purposes
+const DUMMY_USERS = [
+	{ id: "1", email: "gabrial@gmail.com", password: "Gabrial@123", name: "Gabrial" },
+	{ id: "2", email: "tom@gmail.com", password: "Tom@123", name: "Tom" },
+	{ id: "3", email: "thomas@gmail.com", password: "Thomas@1234", name: "Thomas" }
+]
+
+// Dummy login function
+async function dummyLogin(email: string, password: string) {
+	const user = DUMMY_USERS.find((u) => u.email === email && u.password === password)
+	if (!user) throw new Error("Invalid credentials")
+	// Simulate tokens
+	return {
+		accessToken: "dummy-access-token",
+		refreshToken: "dummy-refresh-token",
+		user: { id: user.id, email: user.email, name: user.name }
+	}
+}
+
+// Dummy signup function
+async function dummySignup(email: string, password: string, name: string) {
+	const exists = DUMMY_USERS.some((u) => u.email === email)
+	if (exists) throw new Error("Email already exists")
+	const id = (DUMMY_USERS.length + 1).toString()
+	DUMMY_USERS.push({ id, email, password, name })
+	return {
+		accessToken: "dummy-access-token",
+		refreshToken: "dummy-refresh-token",
+		user: { id, email, name }
+	}
+}
+
 type AuthContextValue = {
 	user: User | null
 	accessToken?: string
@@ -19,6 +51,8 @@ type AuthContextValue = {
 	signIn: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
 	refresh: () => Promise<void>
+	dummySignIn: (email: string, password: string) => Promise<void> // Add this
+	dummySignUp: (email: string, password: string, name: string) => Promise<void> // Add this
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -58,6 +92,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setState((s) => ({ ...s, accessToken }))
 	}
 
+	const dummySignIn = async (email: string, password: string) => {
+		const { accessToken, refreshToken: rToken, user } = await dummyLogin(email, password)
+		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(rToken), storage.setUser(user)])
+		setState({ user, accessToken, isBootstrapping: false })
+	}
+
+	const dummySignUp = async (email: string, password: string, name: string) => {
+		const { accessToken, refreshToken: rToken, user } = await dummySignup(email, password, name)
+		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(rToken), storage.setUser(user)])
+		setState({ user, accessToken, isBootstrapping: false })
+	}
+
 	const value = useMemo<AuthContextValue>(
 		() => ({
 			user: state.user,
@@ -65,7 +111,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			isBootstrapping: state.isBootstrapping,
 			signIn,
 			signOut,
-			refresh
+			refresh,
+			dummySignIn,
+			dummySignUp
 		}),
 		[state.user, state.accessToken, state.isBootstrapping]
 	)

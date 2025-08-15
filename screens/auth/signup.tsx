@@ -3,10 +3,9 @@ import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from "@/comp
 import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control"
 import { Heading } from "@/components/ui/heading"
 import { HStack } from "@/components/ui/hstack"
-import { ArrowLeftIcon, CheckIcon, EyeIcon, EyeOffIcon, Icon } from "@/components/ui/icon"
+import { CheckIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon"
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
 import { LinkText } from "@/components/ui/link"
-import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
@@ -101,17 +100,6 @@ const SignUpWithLeftBackground = () => {
 				className="md:items-center"
 				space="md"
 			>
-				<Pressable
-					onPress={() => {
-						router.back()
-					}}
-				>
-					<Icon
-						as={ArrowLeftIcon}
-						className="md:hidden stroke-background-800"
-						size="xl"
-					/>
-				</Pressable>
 				<VStack>
 					<Heading
 						className="md:text-center"
@@ -119,7 +107,7 @@ const SignUpWithLeftBackground = () => {
 					>
 						Sign up
 					</Heading>
-					<Text>Sign up and start using gluestack</Text>
+					{/* <Text>Sign up and start using gluestack</Text> */}
 				</VStack>
 			</VStack>
 			<VStack className="w-full">
@@ -294,6 +282,7 @@ const SignUpWithLeftBackground = () => {
 					space="lg"
 				>
 					<Button
+						variant="solid"
 						className="w-full"
 						onPress={handleSubmit(onSubmit)}
 					>

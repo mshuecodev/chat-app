@@ -1,5 +1,5 @@
 import { useAuth } from "@/providers/AuthProvider"
-import { Stack, useRouter } from "expo-router"
+import { Slot, useRouter } from "expo-router"
 import { useEffect } from "react"
 
 export default function ProtectedLayout() {
@@ -17,5 +17,6 @@ export default function ProtectedLayout() {
 
 	console.log("ProtectedLayout rendered, user is authenticated", user) // Debugging log to check layout rendering
 
-	return <Stack screenOptions={{ headerShown: false }} />
+	// return <Stack screenOptions={{ headerShown: false }} />
+	return <Slot />
 }
