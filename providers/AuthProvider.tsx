@@ -50,7 +50,7 @@ type AuthContextValue = {
 	signIn: (email: string, password: string) => Promise<void>
 	signUpUser: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
-	refresh: () => Promise<void>
+	// refresh: () => Promise<void>
 	dummySignIn: (email: string, password: string) => Promise<void> // Add this
 	dummySignUp: (email: string, password: string, name: string) => Promise<void> // Add this
 }
@@ -60,22 +60,24 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [state, setState] = useState<AuthState>({ user: null, accessToken: undefined, isBootstrapping: true })
 
-	// Bootstrap session from SecureStore
 	useEffect(() => {
-		;(async () => {
+		const init = async () => {
 			try {
-				const [accessToken, user] = await Promise.all([storage.getAccessToken(), storage.getUser<User>()])
-				setState((s) => ({ ...s, user: user ?? null, accessToken: accessToken ?? undefined }))
+				await refresh()
+			} catch {
+				setState((s) => ({ ...s, user: null }))
 			} finally {
 				setState((s) => ({ ...s, isBootstrapping: false }))
 				SplashScreen.hideAsync().catch(() => {})
 			}
-		})()
+		}
+
+		init()
 	}, [])
 
 	const signIn = async (email: string, password: string) => {
 		const { accessToken, refreshToken: rToken, user } = await login({ email, password })
-		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(rToken), storage.setUser(user)])
+		// await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(rToken), storage.setUser(user)])
 		setState({ user, accessToken, isBootstrapping: false })
 	}
 
@@ -91,13 +93,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setState({ user: null, accessToken: undefined, isBootstrapping: false })
 	}
 
+	/**
+	 * Refresh → call backend with cookie to get new access token
+	 */
 	const refresh = async () => {
-		const rToken = await storage.getRefreshToken()
-		if (!rToken) return signOut()
-		const { accessToken, refreshToken: newR } = await refreshToken(rToken)
-		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(newR)])
-		setState((s) => ({ ...s, accessToken }))
+		const res = await refreshToken()
+		if (res.ok) {
+			const { accessToken } = await res.json()
+			console.log("Refreshed access token:", accessToken)
+			// const me = await fetchMe(accessToken)
+			// setState({ user: me.user, accessToken, isBootstrapping: false })
+		} else {
+			setState({ user: null, accessToken: undefined, isBootstrapping: false })
+		}
 	}
+
+	// 	const refresh = async () => {
+	//     const res = await refreshToken() // backend uses cookies to refresh session
+	//     if (res.ok) {
+	//       // optionally fetch the user again from /me endpoint
+	//       const me = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/me`, {
+	//         credentials: "include",
+	//       }).then((r) => r.json())
+	//       setState((s) => ({ ...s, user: me.user }))
+	//     } else {
+	//       setState((s) => ({ ...s, user: null }))
+	//     }
+	//   }
 
 	// DUMMY FUNCTIONS
 
@@ -122,7 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			signIn,
 			signUpUser,
 			signOut,
-			refresh,
+			// refresh,
 			dummySignIn,
 			dummySignUp
 		}),

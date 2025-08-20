@@ -10,10 +10,17 @@ export default function ProtectedLayout() {
 		if (!isBootstrapping && !user) {
 			router.replace("/(auth)/sign-in")
 		}
-	}, [isBootstrapping, user])
+	}, [isBootstrapping, user, router])
 
-	if (isBootstrapping) return null
-	if (!user) return null // Prevent rendering children while redirecting
+	if (isBootstrapping) {
+		// you can show a splash or loading screen here
+		return null
+	}
+
+	if (!user) {
+		// prevent rendering protected content during redirect
+		return null
+	}
 
 	console.log("ProtectedLayout rendered, user is authenticated", user) // Debugging log to check layout rendering
 

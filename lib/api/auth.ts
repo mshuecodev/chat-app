@@ -17,8 +17,6 @@ export async function signUp(payload: AuthPayload): Promise<{ user: User }> {
 		throw new Error(err.message || "Signup failed")
 	}
 
-	console.log("Signup response:", res.json())
-
 	return res.json()
 }
 
@@ -32,17 +30,12 @@ export async function login(payload: AuthPayload): Promise<{ user: User } & Auth
 
 	if (!res.ok) throw new Error("Invalid credentials")
 
-	console.log("Login response:", res.json())
 	return res.json()
 }
 
-export async function refreshToken(refreshToken: string): Promise<AuthTokens> {
-	const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+export const refreshToken = async () => {
+	return fetch(`${API_BASE_URL}/auth/refresh`, {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ refreshToken })
+		credentials: "include" // send cookie
 	})
-
-	if (!res.ok) throw new Error("Refresh failed")
-	return res.json()
 }
