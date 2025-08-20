@@ -41,7 +41,7 @@ const LoginWithLeftBackground = () => {
 	})
 
 	const toast = useToast()
-	const { dummySignIn } = useAuth()
+	const { signIn } = useAuth()
 
 	const [validated, setValidated] = useState({
 		emailValid: true,
@@ -51,7 +51,7 @@ const LoginWithLeftBackground = () => {
 
 	const onSubmit = async (data: LoginSchemaType) => {
 		try {
-			await dummySignIn(data.email, data.password)
+			await signIn(data.email, data.password)
 			toast.show({
 				placement: "bottom right",
 				render: ({ id }) => (
@@ -68,8 +68,48 @@ const LoginWithLeftBackground = () => {
 			router.replace("/(app)/(tabs)/chat") // Redirect to protected tabs screen
 		} catch (error: any) {
 			console.log("Login error:", error)
-			if (error.message === "Invalid credentials") {
+			// Handle known error messages
+			if (error.message?.toLowerCase().includes("invalid credentials")) {
 				setValidated({ emailValid: false, passwordValid: false })
+
+				toast.show({
+					placement: "bottom right",
+					render: ({ id }) => (
+						<Toast
+							nativeID={id}
+							variant="outline"
+							action="error"
+						>
+							<ToastTitle>Invalid email or password</ToastTitle>
+						</Toast>
+					)
+				})
+			} else if (error.message?.toLowerCase().includes("network")) {
+				toast.show({
+					placement: "bottom right",
+					render: ({ id }) => (
+						<Toast
+							nativeID={id}
+							variant="outline"
+							action="warning"
+						>
+							<ToastTitle>Network error — check your connection</ToastTitle>
+						</Toast>
+					)
+				})
+			} else {
+				toast.show({
+					placement: "bottom right",
+					render: ({ id }) => (
+						<Toast
+							nativeID={id}
+							variant="outline"
+							action="error"
+						>
+							<ToastTitle>Something went wrong, please try again</ToastTitle>
+						</Toast>
+					)
+				})
 			}
 		}
 	}

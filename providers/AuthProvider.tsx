@@ -1,4 +1,4 @@
-import { login, refreshToken } from "@/lib/api"
+import { login, refreshToken, signUp } from "@/lib/api/auth"
 import { storage } from "@/lib/storage"
 import type { User } from "@/lib/types"
 import * as SplashScreen from "expo-splash-screen"
@@ -48,6 +48,7 @@ type AuthContextValue = {
 	accessToken?: string
 	isBootstrapping: boolean
 	signIn: (email: string, password: string) => Promise<void>
+	signUpUser: (email: string, password: string) => Promise<void>
 	signOut: () => Promise<void>
 	refresh: () => Promise<void>
 	dummySignIn: (email: string, password: string) => Promise<void> // Add this
@@ -78,6 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setState({ user, accessToken, isBootstrapping: false })
 	}
 
+	const signUpUser = async (email: string, password: string) => {
+		const { user } = await signUp({ email, password })
+
+		await storage.setUser(user)
+		setState({ user, accessToken: undefined, isBootstrapping: false })
+	}
+
 	const signOut = async () => {
 		await storage.clearAll()
 		setState({ user: null, accessToken: undefined, isBootstrapping: false })
@@ -90,6 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		await Promise.all([storage.setAccessToken(accessToken), storage.setRefreshToken(newR)])
 		setState((s) => ({ ...s, accessToken }))
 	}
+
+	// DUMMY FUNCTIONS
 
 	const dummySignIn = async (email: string, password: string) => {
 		const { accessToken, refreshToken: rToken, user } = await dummyLogin(email, password)
@@ -110,6 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			accessToken: state.accessToken,
 			isBootstrapping: state.isBootstrapping,
 			signIn,
+			signUpUser,
 			signOut,
 			refresh,
 			dummySignIn,

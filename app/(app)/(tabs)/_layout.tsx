@@ -27,17 +27,7 @@ export default function TabsLayout() {
 				tabBarStyle: {
 					backgroundColor: themeColors.background,
 					height: isLargeScreen ? 70 : 60
-					// paddingHorizontal: isLargeScreen ? 20 : 10,
-					// borderTopWidth: 0
-					// paddingBottom: 10
 				},
-				// tabBarItemStyle: {
-				// 	justifyContent: "center",
-				// 	alignItems: "center"
-				// },
-				// tabBarIconStyle: {
-				// 	marginBottom: isLargeScreen ? 0 : -2
-				// },
 				headerShown: false
 			}}
 		>

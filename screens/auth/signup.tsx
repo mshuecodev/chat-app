@@ -9,6 +9,7 @@ import { LinkText } from "@/components/ui/link"
 import { Text } from "@/components/ui/text"
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
+import { useAuth } from "@/providers/AuthProvider"
 import { AntDesign } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useRouter } from "expo-router"
@@ -38,43 +39,67 @@ const SignUpWithLeftBackground = () => {
 	})
 	const toast = useToast()
 	const router = useRouter()
+	const { signUpUser } = useAuth()
 
-	const onSubmit = (data: SignUpSchemaType) => {
-		if (data.password === data.confirmpassword) {
-			toast.show({
-				placement: "bottom right",
-				render: ({ id }) => {
-					return (
+	const [showPassword, setShowPassword] = useState(false)
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+	const onSubmit = async (data: SignUpSchemaType) => {
+		try {
+			if (data.password !== data.confirmpassword) {
+				toast.show({
+					placement: "bottom right",
+					render: ({ id }) => (
 						<Toast
 							nativeID={id}
-							variant="accent"
-							action="success"
-						>
-							<ToastTitle>Success</ToastTitle>
-						</Toast>
-					)
-				}
-			})
-			reset()
-		} else {
-			toast.show({
-				placement: "bottom right",
-				render: ({ id }) => {
-					return (
-						<Toast
-							nativeID={id}
-							variant="accent"
+							variant="solid"
 							action="error"
 						>
 							<ToastTitle>Passwords do not match</ToastTitle>
 						</Toast>
 					)
-				}
+				})
+				return
+			}
+
+			// 👇 call your AuthProvider function
+			// if you want to test with dummy signup:
+			await signUpUser(data.email, data.password)
+
+			// if you want API signup instead, call your backend function here
+			// await signUp(data.email, data.password, "New User")
+
+			toast.show({
+				placement: "bottom right",
+				render: ({ id }) => (
+					<Toast
+						nativeID={id}
+						variant="solid"
+						action="success"
+					>
+						<ToastTitle>Account created successfully</ToastTitle>
+					</Toast>
+				)
+			})
+
+			// redirect to home or login
+			router.replace("/(app)/(tabs)/contacts") // adjust route
+		} catch (err: any) {
+			console.error("Signup error:", err)
+			toast.show({
+				placement: "bottom right",
+				render: ({ id }) => (
+					<Toast
+						nativeID={id}
+						variant="solid"
+						action="error"
+					>
+						<ToastTitle>{err.message || "Signup failed"}</ToastTitle>
+					</Toast>
+				)
 			})
 		}
 	}
-	const [showPassword, setShowPassword] = useState(false)
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
 	const handleState = () => {
 		setShowPassword((showState) => {
@@ -105,7 +130,7 @@ const SignUpWithLeftBackground = () => {
 						className="md:text-center"
 						size="3xl"
 					>
-						Sign up
+						HR You!
 					</Heading>
 					{/* <Text>Sign up and start using gluestack</Text> */}
 				</VStack>
