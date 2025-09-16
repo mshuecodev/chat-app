@@ -34,7 +34,8 @@ const SignUpWithLeftBackground = () => {
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors }
+		formState: { errors, isSubmitting },
+		watch
 	} = useForm<SignUpSchemaType>({
 		resolver: zodResolver(signUpSchema)
 	})
@@ -44,6 +45,8 @@ const SignUpWithLeftBackground = () => {
 
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	// Watch the rememberme checkbox value
+	const rememberMeChecked = watch("rememberme", false)
 
 	const onSubmit = async (data: SignUpSchemaType) => {
 		try {
@@ -311,7 +314,7 @@ const SignUpWithLeftBackground = () => {
 						variant="solid"
 						className="w-full"
 						onPress={handleSubmit(onSubmit)}
-						disabled={loading}
+						disabled={loading || !rememberMeChecked}
 					>
 						{loading ? (
 							<Spinner
