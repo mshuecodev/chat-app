@@ -58,7 +58,7 @@ export default function TabsLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="settings"
+				name="settings/index"
 				options={{
 					title: "Settings",
 					tabBarIcon: ({ color, size }) => (
@@ -72,6 +72,12 @@ export default function TabsLayout() {
 			/>
 			<Tabs.Screen
 				name="chat/[id]"
+				options={{
+					href: null
+				}}
+			/>
+			<Tabs.Screen
+				name="settings/[id]"
 				options={{
 					href: null
 				}}
