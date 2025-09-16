@@ -122,7 +122,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	//   }
 
 	// DUMMY FUNCTIONS
-
 	const dummySignIn = async (email: string, password: string) => {
 		const { accessToken, refreshToken: rToken, user } = await dummyLogin(email, password)
 		console.log("Dummy sign in successful:", user)
