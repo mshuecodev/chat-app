@@ -2,7 +2,7 @@ import { login, logout, signUp } from "@/lib/api/auth"
 import { storage } from "@/lib/storage"
 import type { User } from "@/lib/types"
 import * as SplashScreen from "expo-splash-screen"
-import React, { createContext, useContext, useMemo, useState } from "react"
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
@@ -27,22 +27,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [state, setState] = useState<AuthState>({
 		user: null,
 		accessToken: undefined,
-		isBootstrapping: true
+		isBootstrapping: false
 	})
 
-	// useEffect(() => {
-	// 	const init = async () => {
-	// 		try {
-	// 			await refresh()
-	// 		} catch {
-	// 			setState((s) => ({ ...s, user: null }))
-	// 		} finally {
-	// 			setState((s) => ({ ...s, isBootstrapping: false }))
-	// 			SplashScreen.hideAsync().catch(() => {})
-	// 		}
-	// 	}
-	// 	init()
-	// }, [])
+	useEffect(() => {
+		const init = async () => {
+			console.log("AuthProvider init")
+			// try {
+			// 	await refresh()
+			// } catch {
+			// 	setState((s) => ({ ...s, user: null }))
+			// } finally {
+			// 	setState((s) => ({ ...s, isBootstrapping: false }))
+			// 	SplashScreen.hideAsync().catch(() => {})
+			// }
+		}
+		init()
+	}, [])
 
 	const signIn = async (email: string, password: string) => {
 		const { accessToken, refreshToken, user } = await login({ email, password })

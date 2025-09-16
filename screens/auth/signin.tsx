@@ -251,11 +251,11 @@ const LoginWithLeftBackground = () => {
 							name="rememberme"
 							defaultValue={false}
 							control={control}
-							render={({ field }: { field: { onChange: (checked: boolean) => void; value: boolean } }) => (
+							render={({ field }) => (
 								<Checkbox
 									size="sm"
 									value="Remember me"
-									isChecked={field.value}
+									isChecked={field.value ?? false}
 									onChange={field.onChange}
 									aria-label="Remember me"
 								>
