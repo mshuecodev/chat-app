@@ -63,6 +63,7 @@ export async function signUp(payload: AuthPayload): Promise<SignUpResponse> {
 
 export async function login(payload: AuthPayload): Promise<{ user: User } & AuthTokens> {
 	const res = await api.post<{ user: User } & AuthTokens>("/sb/auth/signin", payload)
+	
 	accessToken = res.data.accessToken
 	refreshToken = res.data.refreshToken
 	return res.data
