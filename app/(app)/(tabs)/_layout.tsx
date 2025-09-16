@@ -1,6 +1,6 @@
 import { useTheme } from "@/providers/ThemeProvider"
 import { Ionicons } from "@expo/vector-icons"
-import { Tabs } from "expo-router"
+import { Tabs, useSegments } from "expo-router"
 import { useMemo } from "react"
 import { useWindowDimensions } from "react-native"
 
@@ -8,6 +8,7 @@ export default function TabsLayout() {
 	const { width } = useWindowDimensions()
 	const isLargeScreen = width >= 768 // Tablet & Web breakpoint
 	const { darkMode } = useTheme()
+	const segments = useSegments()
 
 	const themeColors = useMemo(
 		() => ({
@@ -18,6 +19,9 @@ export default function TabsLayout() {
 		[darkMode]
 	)
 
+	// Hide tab bar on detail screens
+	const hideTabBar = (segments[segments.length - 2] === "chat" && segments[segments.length - 1]) || (segments[segments.length - 2] === "settings" && segments[segments.length - 1])
+
 	return (
 		<Tabs
 			screenOptions={{
@@ -26,7 +30,8 @@ export default function TabsLayout() {
 				tabBarInactiveTintColor: themeColors.inactive,
 				tabBarStyle: {
 					backgroundColor: themeColors.background,
-					height: isLargeScreen ? 70 : 60
+					height: isLargeScreen ? 70 : 60,
+					display: hideTabBar ? "none" : "flex"
 				},
 				headerShown: false
 			}}

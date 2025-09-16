@@ -1,8 +1,9 @@
-import { Avatar, Button, ButtonText, Divider, HStack, Text, VStack } from "@/components/ui"
+import { Avatar, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
 import { useRouter } from "expo-router"
+import { ChevronRight } from "lucide-react-native"
 
 const ACTIVE_CHATS = [
-	{ id: 1, name: "Gabrial", lastMessage: "I'm good, thanks!", avatar: "https://i.pravatar.cc/150?img=1" },
+	{ id: 1, name: "Gabriel", lastMessage: "I'm good, thanks!", avatar: "https://i.pravatar.cc/150?img=1" },
 	{ id: 2, name: "Tom", lastMessage: "Hello! How are you?", avatar: "https://i.pravatar.cc/150?img=2" }
 ]
 
@@ -10,57 +11,59 @@ export default function ChatListScreen() {
 	const router = useRouter()
 
 	return (
-		<VStack
-			className="flex-1 bg-background-50 p-4"
-			space="lg"
-		>
-			<Text
-				size="2xl"
-				className="font-bold mb-2"
-			>
-				Chats
-			</Text>
+		<VStack className="flex-1 bg-background-50">
+			{/* Header */}
+			<HStack className="items-center justify-between px-4 py-3">
+				<Text
+					size="xl"
+					className="font-bold"
+				>
+					Chats
+				</Text>
+			</HStack>
 			<Divider />
+
+			{/* Chat List */}
 			<VStack
+				className="px-4"
 				space="md"
-				className="flex-1"
 			>
 				{ACTIVE_CHATS.map((chat) => (
-					<HStack
+					<Pressable
 						key={chat.id}
-						space="md"
-						alignItems="center"
-						className="bg-background-100 rounded-xl p-3"
+						className="flex-row items-center justify-between bg-background-100 rounded-xl px-4 py-3"
 						onPress={() => router.push(`/chat/${chat.id}`)}
-						style={{ cursor: "pointer" }}
 					>
-						<Avatar
-							source={{ uri: chat.avatar }}
-							size="md"
-						/>
-						<VStack className="flex-1">
-							<Text
-								size="lg"
-								className="font-semibold"
-							>
-								{chat.name}
-							</Text>
-							<Text
-								size="sm"
-								className="text-background-600"
-								numberOfLines={1}
-							>
-								{chat.lastMessage}
-							</Text>
-						</VStack>
-						<Button
-							variant="outline"
-							size="sm"
-							onPress={() => router.push(`/chat/${chat.id}`)}
+						<HStack
+							space="md"
+							className="items-center flex-1"
 						>
-							<ButtonText>Open</ButtonText>
-						</Button>
-					</HStack>
+							<Avatar
+								source={{ uri: chat.avatar }}
+								size="md"
+							/>
+							<VStack className="flex-1">
+								<Text
+									size="md"
+									className="font-semibold"
+								>
+									{chat.name}
+								</Text>
+								<Text
+									size="sm"
+									className="text-background-600"
+									numberOfLines={1}
+								>
+									{chat.lastMessage}
+								</Text>
+							</VStack>
+						</HStack>
+						<Icon
+							as={ChevronRight}
+							size="md"
+							className="text-background-500"
+						/>
+					</Pressable>
 				))}
 			</VStack>
 		</VStack>
