@@ -6,6 +6,7 @@ import { HStack } from "@/components/ui/hstack"
 import { CheckIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon"
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
 import { LinkText } from "@/components/ui/link"
+import { Spinner } from "@/components/ui/spinner"
 import { Text } from "@/components/ui/text"
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
@@ -39,7 +40,7 @@ const SignUpWithLeftBackground = () => {
 	})
 	const toast = useToast()
 	const router = useRouter()
-	const { signUpUser } = useAuth()
+	const { signUpUser, loading } = useAuth()
 
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -64,7 +65,7 @@ const SignUpWithLeftBackground = () => {
 
 			// 👇 call your AuthProvider function
 			// if you want to test with dummy signup:
-			await signUpUser(data.email, data.password)
+			const message = await signUpUser(data.email, data.password)
 
 			// if you want API signup instead, call your backend function here
 			// await signUp(data.email, data.password, "New User")
@@ -77,7 +78,7 @@ const SignUpWithLeftBackground = () => {
 						variant="solid"
 						action="success"
 					>
-						<ToastTitle>Account created successfully</ToastTitle>
+						<ToastTitle>{message || "Account created successfully"}</ToastTitle>
 					</Toast>
 				)
 			})
@@ -310,8 +311,16 @@ const SignUpWithLeftBackground = () => {
 						variant="solid"
 						className="w-full"
 						onPress={handleSubmit(onSubmit)}
+						disabled={loading}
 					>
-						<ButtonText className="font-medium">Sign up</ButtonText>
+						{loading ? (
+							<Spinner
+								size="large"
+								color="grey"
+							/>
+						) : (
+							<ButtonText className="font-medium">Sign up</ButtonText>
+						)}
 					</Button>
 					<Button
 						variant="outline"

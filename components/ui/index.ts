@@ -37,7 +37,7 @@ export * from "./pressable"
 // export * from './section-list';
 // export * from './select';
 // export * from './slider';
-// export * from "./spinner"
+export * from "./spinner"
 // export * from './status-bar';
 export * from "./switch"
 export * from "./text"
