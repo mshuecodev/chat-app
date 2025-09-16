@@ -1,85 +1,98 @@
-import { Avatar, Button, ButtonText, Divider, HStack, Switch, Text, VStack } from "@/components/ui"
+import { Avatar, Button, ButtonText, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
 import { useAuth } from "@/providers/AuthProvider"
-import { useTheme } from "@/providers/ThemeProvider"
-import { useState } from "react"
+import { Clock, CreditCard, Download, Globe, Heart, LogOut, MapPin, Settings, Trash2 } from "lucide-react-native"
 
-export default function SettingsScreen() {
+export default function ProfileScreen() {
 	const { user, signOut } = useAuth()
-	const { darkMode, toggleTheme } = useTheme()
-	const [notifications, setNotifications] = useState(true)
 
-	// const handleToggleTheme = useCallback(() => {
-	// 	toggleTheme()
-	// }, [toggleTheme])
+	const menuItems = [
+		{ label: "Favourites", icon: Heart },
+		{ label: "Downloads", icon: Download },
+		{ label: "Language", icon: Globe },
+		{ label: "Location", icon: MapPin },
+		{ label: "Subscription", icon: CreditCard },
+		{ label: "Clear cache", icon: Trash2 },
+		{ label: "Clear history", icon: Clock }
+	]
 
 	return (
-		<VStack
-			className="flex-1 bg-background-50 p-4"
-			space="lg"
-		>
-			<Text
-				size="2xl"
-				className="font-bold mb-4"
-			>
-				Settings
-			</Text>
-			<VStack
-				space="lg"
-				className="bg-background-100 rounded-xl p-4"
-			>
-				<HStack
-					space="md"
-					alignItems="center"
+		<VStack className="flex-1 bg-background-50">
+			{/* Header */}
+			<HStack className="items-center justify-between p-4">
+				<Text
+					size="xl"
+					className="font-bold"
 				>
-					<Avatar
-						source={{ uri: "https://i.pravatar.cc/150?u=" + user?.email }}
-						size="md"
-					/>
-					<VStack>
-						<Text
-							size="lg"
-							className="font-semibold"
-						>
-							{user?.name ?? "User"}
-						</Text>
-						<Text
-							size="sm"
-							className="text-background-600"
-						>
-							{user?.email}
-						</Text>
-					</VStack>
-				</HStack>
-				<Divider />
-				<HStack
-					alignItems="center"
-					justifyContent="between"
+					My Profile
+				</Text>
+				<Icon
+					as={Settings}
+					size="lg"
+				/>
+			</HStack>
+
+			{/* Profile Card */}
+			<VStack className="items-center px-4 py-6">
+				<Avatar
+					size="2xl"
+					source={{ uri: "https://i.pravatar.cc/300?u=" + user?.email }}
+				/>
+				<Text
+					size="lg"
+					className="mt-4 font-semibold"
 				>
-					<Text size="md">Enable Notifications</Text>
-					<Switch
-						value={notifications}
-						onValueChange={setNotifications}
-					/>
-				</HStack>
-				<HStack
-					alignItems="center"
-					justifyContent="between"
+					{user?.name ?? "User"}
+				</Text>
+				<Text
+					size="sm"
+					className="text-background-600"
 				>
-					<Text size="md">Dark Mode</Text>
-					<Switch
-						value={darkMode}
-						onValueChange={toggleTheme}
-					/>
-				</HStack>
-				<Divider />
-				<Button
-					variant="outline"
-					color="error"
-					onPress={signOut}
-				>
-					<ButtonText>Sign Out</ButtonText>
+					@{user?.email?.split("@")[0]}
+				</Text>
+				<Button className="mt-4 w-40 rounded-full bg-error-500">
+					<ButtonText>Edit Profile</ButtonText>
 				</Button>
 			</VStack>
+
+			<Divider />
+
+			{/* Menu Items */}
+			<VStack
+				className="px-4"
+				space="md"
+			>
+				{menuItems.map((item, idx) => (
+					<Pressable
+						key={idx}
+						className="flex-row items-center justify-between py-3 border-b border-background-200"
+					>
+						<HStack
+							space="md"
+							className="items-center"
+						>
+							<Icon
+								as={item.icon}
+								size="md"
+							/>
+							<Text size="md">{item.label}</Text>
+						</HStack>
+						<Text className="text-background-500">{">"}</Text>
+					</Pressable>
+				))}
+			</VStack>
+
+			{/* Logout */}
+			<Pressable
+				onPress={signOut}
+				className="flex-row items-center px-4 py-4 mt-auto"
+			>
+				<Icon
+					as={LogOut}
+					size="md"
+					className="text-error-500 mr-2"
+				/>
+				<Text className="text-error-500 font-semibold">Log out</Text>
+			</Pressable>
 		</VStack>
 	)
 }
