@@ -1,238 +1,100 @@
 import { Button, ButtonText } from "@/components/ui/button"
-import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from "@/components/ui/checkbox"
-import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control"
+import { FormControl, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control"
 import { Heading } from "@/components/ui/heading"
 import { HStack } from "@/components/ui/hstack"
-import { CheckIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon"
+import { EyeIcon, EyeOffIcon } from "@/components/ui/icon"
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
-import { LinkText } from "@/components/ui/link"
 import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast"
 import { VStack } from "@/components/ui/vstack"
-import { useAuth } from "@/providers/AuthProvider"
-import { AntDesign } from "@expo/vector-icons"
+import { AntDesign, FontAwesome } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link, useRouter } from "expo-router"
-import { AlertTriangle } from "lucide-react-native"
+import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Keyboard } from "react-native"
+import { SafeAreaView } from "react-native"
 import { z } from "zod"
-import { AuthLayout } from "./layout"
-// import { GoogleIcon } from "./assets/icons/google"
 
 const loginSchema = z.object({
-	email: z.string().min(1, "Email is required").email(),
-	password: z.string().min(1, "Password is required"),
-	rememberme: z.boolean().optional()
+	email: z.string().email(),
+	password: z.string().min(1, "Password is required")
 })
 
 type LoginSchemaType = z.infer<typeof loginSchema>
 
-const LoginWithLeftBackground = () => {
-	const {
-		control,
-		handleSubmit,
-		reset,
-		formState: { errors }
-	} = useForm<LoginSchemaType>({
+const LoginWithBottomCard = () => {
+	const { control, handleSubmit } = useForm<LoginSchemaType>({
 		resolver: zodResolver(loginSchema)
 	})
-
-	const toast = useToast()
-	const { signIn } = useAuth()
-
-	const [validated, setValidated] = useState({
-		emailValid: true,
-		passwordValid: true
-	})
 	const [showPassword, setShowPassword] = useState(false)
-
-	const onSubmit = async (data: LoginSchemaType) => {
-		try {
-			await signIn(data.email, data.password)
-			toast.show({
-				placement: "bottom right",
-				render: ({ id }) => (
-					<Toast
-						nativeID={id}
-						variant="outline"
-						action="success"
-					>
-						<ToastTitle>Logged in successfully!</ToastTitle>
-					</Toast>
-				)
-			})
-			reset()
-			router.replace("/(app)/(tabs)/chat") // Redirect to protected tabs screen
-		} catch (error: any) {
-			// Handle known error messages
-			if (error.message?.toLowerCase().includes("invalid credentials")) {
-				setValidated({ emailValid: false, passwordValid: false })
-
-				toast.show({
-					placement: "bottom right",
-					render: ({ id }) => (
-						<Toast
-							nativeID={id}
-							variant="outline"
-							action="error"
-						>
-							<ToastTitle>Invalid email or password</ToastTitle>
-						</Toast>
-					)
-				})
-			} else if (error.message?.toLowerCase().includes("network")) {
-				toast.show({
-					placement: "bottom right",
-					render: ({ id }) => (
-						<Toast
-							nativeID={id}
-							variant="outline"
-							action="warning"
-						>
-							<ToastTitle>Network error — check your connection</ToastTitle>
-						</Toast>
-					)
-				})
-			} else {
-				toast.show({
-					placement: "bottom right",
-					render: ({ id }) => (
-						<Toast
-							nativeID={id}
-							variant="outline"
-							action="error"
-						>
-							<ToastTitle>{error?.message}</ToastTitle>
-						</Toast>
-					)
-				})
-			}
-		}
-	}
-
-	const handleState = () => {
-		setShowPassword((showState) => {
-			return !showState
-		})
-	}
-	const handleKeyPress = () => {
-		Keyboard.dismiss()
-		handleSubmit(onSubmit)()
-	}
 	const router = useRouter()
 
+	const onSubmit = (data: LoginSchemaType) => {
+		console.log("Login submit", data)
+		router.replace("/(app)/(tabs)/chat")
+	}
+
 	return (
-		<VStack
-			className="max-w-[440px] w-full"
-			space="md"
-		>
-			<VStack
-				className="md:items-center"
-				space="md"
-			>
-				<Pressable
-					onPress={() => {
-						router.back()
-					}}
-				>
-					{/* <Icon
-						as={ArrowLeftIcon}
-						className="md:hidden text-background-800"
-						size="xl"
-					/> */}
-				</Pressable>
-				<VStack>
+		<SafeAreaView className="flex-1 bg-[#E53935]">
+			<VStack className="flex-1 items-center ">
+				{/* Welcome text */}
+				<VStack className="flex-1 items-center mt-10 ">
 					<Heading
-						className="md:text-center"
+						className="text-white"
 						size="3xl"
 					>
-						Log in
+						Hello!
 					</Heading>
-					{/* <Text>Login to start using gluestack</Text> */}
+					<Text className="text-white mt-2">Welcome back to ChatApp</Text>
 				</VStack>
-			</VStack>
-			<VStack className="w-full">
+
+				{/* White Card */}
 				<VStack
-					space="xl"
-					className="w-full"
+					className="flex-2 bg-white absolute bottom-0 w-full 
+			h-2/3
+			
+			p-6 rounded-t-3xl shadow-lg space-y-6"
 				>
-					<FormControl
-						isInvalid={!!errors?.email || !validated.emailValid}
-						className="w-full"
-					>
+					<Heading size="lg">Login</Heading>
+
+					{/* Email */}
+					<FormControl>
 						<FormControlLabel>
 							<FormControlLabelText>Email</FormControlLabelText>
 						</FormControlLabel>
 						<Controller
-							defaultValue=""
 							name="email"
 							control={control}
-							rules={{
-								validate: async (value: any) => {
-									try {
-										await loginSchema.parseAsync({ email: value })
-										return true
-									} catch (error: any) {
-										return error.message
-									}
-								}
-							}}
-							render={({ field }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-								<Input>
+							render={({ field }) => (
+								<Input className="rounded-full">
 									<InputField
 										placeholder="Enter email"
 										value={field.value}
 										onChangeText={field.onChange}
-										onBlur={field.onBlur}
-										onSubmitEditing={handleKeyPress}
-										returnKeyType="done"
 									/>
 								</Input>
 							)}
 						/>
-						<FormControlError>
-							<FormControlErrorIcon as={AlertTriangle} />
-							<FormControlErrorText>{errors?.email?.message || (!validated.emailValid && "Email ID not found")}</FormControlErrorText>
-						</FormControlError>
 					</FormControl>
-					{/* Label Message */}
-					<FormControl
-						isInvalid={!!errors.password || !validated.passwordValid}
-						className="w-full"
-					>
+
+					{/* Password */}
+					<FormControl>
 						<FormControlLabel>
 							<FormControlLabelText>Password</FormControlLabelText>
 						</FormControlLabel>
 						<Controller
-							defaultValue=""
 							name="password"
 							control={control}
-							rules={{
-								validate: async (value: any) => {
-									try {
-										await loginSchema.parseAsync({ password: value })
-										return true
-									} catch (error: any) {
-										return error.message
-									}
-								}
-							}}
-							render={({ field }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-								<Input>
+							render={({ field }) => (
+								<Input className="rounded-full">
 									<InputField
 										type={showPassword ? "text" : "password"}
 										placeholder="Enter password"
 										value={field.value}
 										onChangeText={field.onChange}
-										onBlur={field.onBlur}
-										onSubmitEditing={handleKeyPress}
-										returnKeyType="done"
 									/>
 									<InputSlot
-										onPress={handleState}
+										onPress={() => setShowPassword(!showPassword)}
 										className="pr-3"
 									>
 										<InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
@@ -240,89 +102,64 @@ const LoginWithLeftBackground = () => {
 								</Input>
 							)}
 						/>
-						<FormControlError>
-							<FormControlErrorIcon as={AlertTriangle} />
-							<FormControlErrorText>{errors?.password?.message || (!validated.passwordValid && "Password was incorrect")}</FormControlErrorText>
-						</FormControlError>
 					</FormControl>
-					<HStack className="w-full justify-between ">
-						<Controller
-							name="rememberme"
-							defaultValue={false}
-							control={control}
-							render={({ field }) => (
-								<Checkbox
-									size="sm"
-									value="Remember me"
-									isChecked={field.value ?? false}
-									onChange={field.onChange}
-									aria-label="Remember me"
-								>
-									<CheckboxIndicator>
-										<CheckboxIcon as={CheckIcon} />
-									</CheckboxIndicator>
-									<CheckboxLabel>Remember me</CheckboxLabel>
-								</Checkbox>
-							)}
-						/>
-						<Link
-							href="/(auth)/sign-in"
-							// href="/auth/forgot-password"
-						>
-							<LinkText className="font-medium text-sm text-primary-700 group-hover/link:text-primary-600">Forgot Password?</LinkText>
-						</Link>
-					</HStack>
-				</VStack>
-				<VStack
-					className="w-full my-7 "
-					space="lg"
-				>
+
+					{/* Forgot Password */}
+					<Pressable onPress={() => router.push("/(auth)/forgot-password")}>
+						<Text className="text-[#E53935] text-sm self-end">Forgot Password?</Text>
+					</Pressable>
+
+					{/* Login Button */}
 					<Button
-						size="md"
-						// variant="outline"
-						className="w-full"
+						className="rounded-full bg-[#E53935] w-full"
 						onPress={handleSubmit(onSubmit)}
 					>
-						<ButtonText className="font-medium">Log in</ButtonText>
+						<ButtonText className="text-white font-medium">Login</ButtonText>
 					</Button>
-					<Button
-						variant="outline"
-						action="secondary"
-						className="w-full gap-1"
-						onPress={() => {}}
-					>
-						<ButtonText className="font-medium">Continue with Google</ButtonText>
-						<AntDesign
-							name="google"
-							size={20}
-							color="#4285F4"
-						/>
-					</Button>
+
+					{/* Divider */}
+					<HStack className="justify-center my-2">
+						<Text className="text-gray-500">Or login with</Text>
+					</HStack>
+
+					{/* Social Buttons */}
+					<HStack className="justify-center space-x-4">
+						<Pressable className="w-12 h-12 rounded-full border border-gray-200 items-center justify-center shadow-sm">
+							<FontAwesome
+								name="facebook"
+								size={22}
+								color="#1877F2"
+							/>
+						</Pressable>
+						<Pressable className="w-12 h-12 rounded-full border border-gray-200 items-center justify-center shadow-sm">
+							<AntDesign
+								name="google"
+								size={22}
+								color="#DB4437"
+							/>
+						</Pressable>
+						<Pressable className="w-12 h-12 rounded-full border border-gray-200 items-center justify-center shadow-sm">
+							<AntDesign
+								name="apple1"
+								size={22}
+								color="#000"
+							/>
+						</Pressable>
+					</HStack>
+
+					{/* Sign Up */}
+					<HStack className="justify-center space-x-1 mt-4">
+						<Text size="md">Don’t have an account?</Text>
+						<Pressable onPress={() => router.push("/(auth)/sign-up")}>
+							<Text className="text-[#E53935] font-medium">Sign Up</Text>
+						</Pressable>
+					</HStack>
 				</VStack>
-				<HStack
-					className="self-center"
-					space="sm"
-				>
-					<Text size="md">Don't have an account?</Text>
-					<Link href="/(auth)/sign-up">
-						<LinkText
-							className="font-medium text-primary-700 group-hover/link:text-primary-600  group-hover/pressed:text-primary-700"
-							size="md"
-						>
-							Sign up
-						</LinkText>
-					</Link>
-				</HStack>
 			</VStack>
-		</VStack>
+		</SafeAreaView>
 	)
 }
 
 export const SignIn = () => {
-	console.log("Rendering SignIn screen")
-	return (
-		<AuthLayout>
-			<LoginWithLeftBackground />
-		</AuthLayout>
-	)
+	return <LoginWithBottomCard />
 }

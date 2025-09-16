@@ -2,7 +2,7 @@ import { useTheme } from "@/providers/ThemeProvider"
 import { Ionicons } from "@expo/vector-icons"
 import { Tabs, useSegments } from "expo-router"
 import { useMemo } from "react"
-import { useWindowDimensions } from "react-native"
+import { Platform, useWindowDimensions } from "react-native"
 
 export default function TabsLayout() {
 	const { width } = useWindowDimensions()
@@ -12,9 +12,10 @@ export default function TabsLayout() {
 
 	const themeColors = useMemo(
 		() => ({
-			active: darkMode ? "#60a5fa" : "#2563eb",
+			active: "#E53935",
 			inactive: darkMode ? "#94a3b8" : "#64748b",
-			background: darkMode ? "#0f172a" : "#f8fafc"
+			background: darkMode ? "#0f172a" : "#ffffff",
+			border: darkMode ? "#1e293b" : "#e5e7eb"
 		}),
 		[darkMode]
 	)
@@ -31,18 +32,30 @@ export default function TabsLayout() {
 				tabBarStyle: {
 					backgroundColor: themeColors.background,
 					height: isLargeScreen ? 70 : 60,
-					display: hideTabBar ? "none" : "flex"
+					borderTopLeftRadius: 20,
+					borderTopRightRadius: 20,
+					borderTopWidth: 1,
+					borderTopColor: themeColors.border,
+					shadowColor: "#000",
+					shadowOpacity: 0.05,
+					shadowOffset: { width: 0, height: -2 },
+					shadowRadius: 6,
+					elevation: 5,
+					display: hideTabBar ? "none" : "flex",
+					position: "absolute",
+					overflow: "hidden"
 				},
-				headerShown: false
+				headerShown: false,
+				tabBarHideOnKeyboard: Platform.OS === "android" // auto hide on keyboard open
 			}}
 		>
 			<Tabs.Screen
 				name="chat/index"
 				options={{
 					title: "Chats",
-					tabBarIcon: ({ color, size }) => (
+					tabBarIcon: ({ color, size, focused }) => (
 						<Ionicons
-							name="chatbubble-ellipses-outline"
+							name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"}
 							size={size}
 							color={color}
 						/>
@@ -53,9 +66,9 @@ export default function TabsLayout() {
 				name="contacts"
 				options={{
 					title: "Contacts",
-					tabBarIcon: ({ color, size }) => (
+					tabBarIcon: ({ color, size, focused }) => (
 						<Ionicons
-							name="people-outline"
+							name={focused ? "people" : "people-outline"}
 							size={size}
 							color={color}
 						/>
@@ -66,26 +79,24 @@ export default function TabsLayout() {
 				name="settings/index"
 				options={{
 					title: "Settings",
-					tabBarIcon: ({ color, size }) => (
+					tabBarIcon: ({ color, size, focused }) => (
 						<Ionicons
-							name="settings-outline"
+							name={focused ? "settings" : "settings-outline"}
 							size={size}
 							color={color}
 						/>
 					)
 				}}
 			/>
+
+			{/* Hidden routes */}
 			<Tabs.Screen
 				name="chat/[id]"
-				options={{
-					href: null
-				}}
+				options={{ href: null }}
 			/>
 			<Tabs.Screen
 				name="settings/[id]"
-				options={{
-					href: null
-				}}
+				options={{ href: null }}
 			/>
 		</Tabs>
 	)
