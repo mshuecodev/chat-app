@@ -65,6 +65,7 @@ export default function ChatDetailScreen() {
 	// Find chat partner (first non-You sender)
 	const partner = messages.find((m) => m.sender !== "You")
 	const chatTitle = partner ? partner.sender : "Chat"
+	const chatAvatar = partner ? partner.avatar : "https://i.pravatar.cc/150?img=5"
 
 	return (
 		<VStack className="flex-1 bg-white">
@@ -81,12 +82,24 @@ export default function ChatDetailScreen() {
 						className="text-black"
 					/>
 				</Pressable>
-				<Text
-					size="xl"
-					className="font-bold text-black"
-				>
-					{chatTitle}
-				</Text>
+				<Avatar
+					source={{ uri: chatAvatar }}
+					size="sm"
+				/>
+				<VStack>
+					<Text
+						size="md"
+						className="font-bold text-black"
+					>
+						{chatTitle}
+					</Text>
+					<Text
+						size="xs"
+						className="text-gray-500"
+					>
+						Online
+					</Text>
+				</VStack>
 			</HStack>
 
 			{/* Messages */}

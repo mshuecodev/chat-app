@@ -1,4 +1,4 @@
-import { Button, ButtonText, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
+import { Avatar, Button, ButtonText, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
 import { useAuth } from "@/providers/AuthProvider"
 import { useRouter } from "expo-router"
 import { Clock, CreditCard, Download, Globe, Heart, LogOut, MapPin, Settings, Trash2 } from "lucide-react-native"
@@ -18,7 +18,7 @@ export default function ProfileScreen() {
 	]
 
 	return (
-		<VStack className="flex-1 bg-background-50">
+		<VStack className="flex-1  bg-background-50 ">
 			{/* Header */}
 			<HStack className="items-center justify-between p-4">
 				<Text
@@ -35,10 +35,10 @@ export default function ProfileScreen() {
 
 			{/* Profile Card */}
 			<VStack className="items-center px-4 py-6">
-				{/* <Avatar
+				<Avatar
 					size="2xl"
-					source={{ uri: "https://i.pravatar.cc/300?u=" + user?.email }}
-				/> */}
+					source={{ uri: "https://i.pravatar.cc/300?u=" }}
+				/>
 				<Text
 					size="lg"
 					className="mt-4 font-semibold"
@@ -52,10 +52,10 @@ export default function ProfileScreen() {
 					@{user?.email?.split("@")[0]}
 				</Text>
 				<Button
-					className="mt-4 w-40 rounded-full bg-error-500"
+					className="mt-4 w-40 rounded-full bg-[#E53935]"
 					onPress={() => router.push(`/settings/${user.id}`)}
 				>
-					<ButtonText>Edit Profile</ButtonText>
+					<ButtonText className="text-white">Edit Profile</ButtonText>
 				</Button>
 			</VStack>
 
@@ -63,7 +63,7 @@ export default function ProfileScreen() {
 
 			{/* Menu Items */}
 			<VStack
-				className="px-4"
+				className="px-4 flex-1"
 				space="md"
 			>
 				{menuItems.map((item, idx) => (
@@ -84,20 +84,26 @@ export default function ProfileScreen() {
 						<Text className="text-background-500">{">"}</Text>
 					</Pressable>
 				))}
-			</VStack>
 
-			{/* Logout */}
-			<Pressable
-				onPress={signOut}
-				className="flex-row items-center px-4 py-4 mt-auto"
-			>
-				<Icon
-					as={LogOut}
-					size="md"
-					className="text-error-500 mr-2"
-				/>
-				<Text className="text-error-500 font-semibold">Log out</Text>
-			</Pressable>
+				{/* logout */}
+				<Pressable
+					onPress={signOut}
+					className="flex-row items-center justify-between py-3 border-b border-background-200"
+				>
+					<HStack
+						space="md"
+						className="items-center"
+					>
+						<Icon
+							as={LogOut}
+							size="md"
+							className="text-[#E53935] mr-2"
+						/>
+						<Text className="text-[#E53935] font-semibold">Log out</Text>
+					</HStack>
+					<Text className="text-background-500">{">"}</Text>
+				</Pressable>
+			</VStack>
 		</VStack>
 	)
 }
