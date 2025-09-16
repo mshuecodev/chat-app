@@ -320,6 +320,7 @@ const LoginWithLeftBackground = () => {
 }
 
 export const SignIn = () => {
+	console.log("Rendering SignIn screen")
 	return (
 		<AuthLayout>
 			<LoginWithLeftBackground />

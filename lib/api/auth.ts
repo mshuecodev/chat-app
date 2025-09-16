@@ -1,41 +1,80 @@
-// lib/api/auth.ts
 import { API_BASE_URL } from "@/constants/env"
 import { AuthTokens, User } from "@/lib/types"
+import axios from "axios"
+// Attach access token to every request if available
+import type { InternalAxiosRequestConfig } from "axios"
 
 export type AuthPayload = { email: string; password: string }
+export type SignUpResponse = {
+	message: string // e.g., "Verification email sent"
+}
 
-export async function signUp(payload: AuthPayload): Promise<{ user: User }> {
-	const res = await fetch(`${API_BASE_URL}/auth/signup`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include", // ✅ cookies handled automatically
-		body: JSON.stringify(payload)
-	})
+// In-memory token storage (avoid localStorage for XSS safety)
+let accessToken: string | null = null
+let refreshToken: string | null = null
 
-	if (!res.ok) {
-		const err = await res.json().catch(() => ({}))
-		throw new Error(err.message || "Signup failed")
+// Axios instance
+const api = axios.create({
+	baseURL: API_BASE_URL,
+	withCredentials: true,
+	headers: {
+		"Content-Type": "application/json"
 	}
+})
 
-	return res.json()
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+	if (accessToken && config.headers) {
+		config.headers.Authorization = `Bearer ${accessToken}`
+	}
+	return config
+})
+
+// Handle token refresh on 401 errors
+api.interceptors.response.use(
+	(response) => response,
+	async (error) => {
+		const originalRequest = error.config
+		if (error.response?.status === 401 && !originalRequest._retry && refreshToken) {
+			originalRequest._retry = true
+			try {
+				const res = await api.post<AuthTokens>("/sb/auth/refresh", { refreshToken })
+				accessToken = res.data.accessToken
+				refreshToken = res.data.refreshToken
+				if (originalRequest.headers) originalRequest.headers.Authorization = `Bearer ${accessToken}`
+				return api(originalRequest)
+			} catch (refreshError) {
+				// Optionally: logout user or redirect to login
+				accessToken = null
+				refreshToken = null
+				return Promise.reject(refreshError)
+			}
+		}
+		const message = error.response?.data?.message || error.message || "An error occurred"
+		return Promise.reject(new Error(message))
+	}
+)
+
+// Auth API functions
+
+export async function signUp(payload: AuthPayload): Promise<SignUpResponse> {
+	const res = await api.post<SignUpResponse>("/sb/auth/signup", payload)
+	return res.data
 }
 
 export async function login(payload: AuthPayload): Promise<{ user: User } & AuthTokens> {
-	const res = await fetch(`${API_BASE_URL}/auth/signin`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include", // ✅ ensures cookies are sent/received
-		body: JSON.stringify(payload)
-	})
-
-	if (!res.ok) throw new Error("Invalid credentials")
-
-	return res.json()
+	const res = await api.post<{ user: User } & AuthTokens>("/sb/auth/signin", payload)
+	accessToken = res.data.accessToken
+	refreshToken = res.data.refreshToken
+	return res.data
 }
 
-export const refreshToken = async () => {
-	return fetch(`${API_BASE_URL}/auth/refresh`, {
-		method: "POST",
-		credentials: "include" // send cookie
-	})
+export async function logout(): Promise<void> {
+	await api.post("/sb/auth/logout")
+	accessToken = null
+	refreshToken = null
+}
+
+export async function getCurrentUser(): Promise<User> {
+	const res = await api.get<{ user: User }>("/sb/profile")
+	return res.data.user
 }
