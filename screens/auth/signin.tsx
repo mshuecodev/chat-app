@@ -7,12 +7,13 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
 import { Pressable } from "@/components/ui/pressable"
 import { Text } from "@/components/ui/text"
 import { VStack } from "@/components/ui/vstack"
+import { useAuth } from "@/providers/AuthProvider"
 import { AntDesign, FontAwesome } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "expo-router"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { SafeAreaView } from "react-native"
+import { Keyboard, SafeAreaView, TextInput } from "react-native"
 import { z } from "zod"
 
 const loginSchema = z.object({
@@ -27,11 +28,19 @@ const LoginWithBottomCard = () => {
 		resolver: zodResolver(loginSchema)
 	})
 	const [showPassword, setShowPassword] = useState(false)
+	const { signIn } = useAuth()
+	const passwordRef = useRef<TextInput>(null)
+
 	const router = useRouter()
 
-	const onSubmit = (data: LoginSchemaType) => {
-		console.log("Login submit", data)
+	const onSubmit = async (data: LoginSchemaType) => {
+		await signIn(data.email, data.password)
 		router.replace("/(app)/(tabs)/chat")
+	}
+
+	const handleKeyPress = () => {
+		Keyboard.dismiss()
+		handleSubmit(onSubmit)()
 	}
 
 	return (
@@ -45,7 +54,7 @@ const LoginWithBottomCard = () => {
 					>
 						Hello!
 					</Heading>
-					<Text className="text-white mt-2">Welcome back to ChatApp</Text>
+					<Text className="text-white mt-2">Welcome back to my chat application.</Text>
 				</VStack>
 
 				{/* White Card */}
@@ -71,6 +80,10 @@ const LoginWithBottomCard = () => {
 										placeholder="Enter email"
 										value={field.value}
 										onChangeText={field.onChange}
+										onSubmitEditing={() => {
+											// move focus to password field
+											passwordRef.current?.focus()
+										}}
 									/>
 								</Input>
 							)}
@@ -88,10 +101,13 @@ const LoginWithBottomCard = () => {
 							render={({ field }) => (
 								<Input className="rounded-full">
 									<InputField
+										ref={passwordRef}
 										type={showPassword ? "text" : "password"}
 										placeholder="Enter password"
 										value={field.value}
 										onChangeText={field.onChange}
+										returnKeyType="done"
+										onSubmitEditing={handleSubmit(onSubmit)}
 									/>
 									<InputSlot
 										onPress={() => setShowPassword(!showPassword)}
