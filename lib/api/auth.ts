@@ -24,7 +24,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 	if (accessToken && config.headers) {
-		config.headers["Authorization"] = `Bearer ${accessToken}`
+		config.headers["authorization"] = `Bearer ${accessToken}`
 	}
 	return config
 })
@@ -40,7 +40,7 @@ api.interceptors.response.use(
 				const res = await api.post<AuthTokens>("/sb/auth/refresh", { refreshToken })
 				accessToken = res.data.accessToken
 				refreshToken = res.data.refreshToken
-				if (originalRequest.headers) originalRequest.headers.Authorization = `Bearer ${accessToken}`
+				if (originalRequest.headers) originalRequest.headers["authorization"] = `Bearer ${accessToken}`
 				return api(originalRequest)
 			} catch (refreshError) {
 				// Optionally: logout user or redirect to login
@@ -55,7 +55,6 @@ api.interceptors.response.use(
 )
 
 // Auth API functions
-
 export async function signUp(payload: AuthPayload): Promise<SignUpResponse> {
 	const res = await api.post<SignUpResponse>("/sb/auth/signup", payload)
 	return res.data

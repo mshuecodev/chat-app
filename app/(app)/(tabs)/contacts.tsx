@@ -1,6 +1,7 @@
 import { Button, ButtonText, Divider, HStack, Input, InputField, Text, VStack } from "@/components/ui"
 import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
-import { useState } from "react"
+import { useUser } from "@/providers/UserProvider"
+import { useEffect, useState } from "react"
 
 const DUMMY_CONTACTS = [
 	{ id: 1, name: "Gabrial", email: "gabrial@gmail.com", avatar: "https://i.pravatar.cc/150?img=1" },
@@ -10,9 +11,13 @@ const DUMMY_CONTACTS = [
 
 export default function ContactsScreen() {
 	const [search, setSearch] = useState("")
+	const { users, loading, fetchUsers } = useUser()
 
 	const filteredContacts = DUMMY_CONTACTS.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()))
 
+	useEffect(() => {
+		fetchUsers()
+	}, [])
 	return (
 		<VStack className="flex-1 bg-background-50">
 			{/* Header */}
