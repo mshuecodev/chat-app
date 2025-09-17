@@ -1,8 +1,8 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
-import { AuthProvider } from "@/providers/AuthProvider"
 import { ThemeProvider as AppThemeProvider, useTheme } from "@/providers/ThemeProvider"
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
 // import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
+import { Providers } from "@/providers/index"
 import { useFonts } from "expo-font"
 import { Slot } from "expo-router"
 import "react-native-reanimated"
@@ -34,9 +34,9 @@ export default function RootLayout() {
 	return (
 		<AppThemeProvider>
 			<ThemedProviders>
-				<AuthProvider>
+				<Providers>
 					<Slot />
-				</AuthProvider>
+				</Providers>
 			</ThemedProviders>
 		</AppThemeProvider>
 	)

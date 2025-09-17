@@ -8,14 +8,21 @@ const USER_KEY = "auth_user" as const
 // const isWeb = typeof window !== "undefined"
 const isWeb = Platform.OS === "web"
 
-const webStorage = {
-	getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
-	setItem: (key: string, value: string) => Promise.resolve(localStorage.setItem(key, value)),
-	deleteItem: (key: string) => Promise.resolve(localStorage.removeItem(key))
+// Use in-memory storage for web for better security (tokens are lost on refresh, but not exposed to XSS)
+const memoryStore: Record<string, string | null> = {}
+
+const webMemoryStorage = {
+	getItem: async (key: string) => memoryStore[key] ?? null,
+	setItem: async (key: string, value: string) => {
+		memoryStore[key] = value
+	},
+	deleteItem: async (key: string) => {
+		memoryStore[key] = null
+	}
 }
 
 const store = isWeb
-	? webStorage
+	? webMemoryStorage
 	: {
 			getItem: SecureStore.getItemAsync,
 			setItem: SecureStore.setItemAsync,

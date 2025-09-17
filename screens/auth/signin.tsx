@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "expo-router"
 import React, { useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Keyboard, SafeAreaView, TextInput } from "react-native"
+import { Keyboard, SafeAreaView, TextInputProps } from "react-native"
 import { z } from "zod"
 
 const loginSchema = z.object({
@@ -29,7 +29,7 @@ const LoginWithBottomCard = () => {
 	})
 	const [showPassword, setShowPassword] = useState(false)
 	const { signIn } = useAuth()
-	const passwordRef = useRef<TextInput>(null)
+	const passwordRef = useRef<TextInputProps>(null)
 
 	const router = useRouter()
 

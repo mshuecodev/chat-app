@@ -2,7 +2,7 @@ import { login, logout, signUp } from "@/lib/api/auth"
 import { storage } from "@/lib/storage"
 import type { User } from "@/lib/types"
 import * as SplashScreen from "expo-splash-screen"
-import React, { createContext, useContext, useMemo, useState } from "react"
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
@@ -33,26 +33,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		loading: false
 	})
 
-	// useEffect(() => {
-	// 	const init = async () => {
-	// 		console.log("AuthProvider init")
-	// 		try {
-	// 			await refresh()
-	// 		} catch {
-	// 			setState((s) => ({ ...s, user: null }))
-	// 		} finally {
-	// 			setState((s) => ({ ...s, isBootstrapping: false }))
-	// 			SplashScreen.hideAsync().catch(() => {})
-	// 		}
-	// 	}
-	// 	init()
-	// }, [])
+	// Bootstrapping: load tokens/user from storage and refresh if needed
+	useEffect(() => {
+		const init = async () => {
+			try {
+				const [accessToken, refreshToken, user] = await Promise.all([storage.getAccessToken(), storage.getRefreshToken(), storage.getUser<User>()])
+				if (accessToken && refreshToken) {
+					setState((s) => ({
+						...s,
+						accessToken,
+						refreshToken,
+						user,
+						isBootstrapping: false
+					}))
+				} else {
+					setState((s) => ({ ...s, isBootstrapping: false }))
+				}
+			} catch {
+				setState((s) => ({ ...s, isBootstrapping: false }))
+			} finally {
+				SplashScreen.hideAsync().catch(() => {})
+			}
+		}
+		init()
+	}, [])
 
 	const signIn = async (email: string, password: string) => {
 		setState((s) => ({ ...s, loading: true }))
 		try {
 			const { accessToken, refreshToken, user } = await login({ email, password })
+			console.log("Login successful:", { user, accessToken, refreshToken })
 			setState({ user, accessToken, isBootstrapping: false, loading: false })
+			await storage.setAccessToken(accessToken)
+			await storage.setRefreshToken(refreshToken)
+			await storage.setUser(user)
 		} catch (e) {
 			setState((s) => ({ ...s, loading: false }))
 			throw e

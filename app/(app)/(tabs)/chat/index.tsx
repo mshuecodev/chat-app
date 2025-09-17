@@ -1,4 +1,5 @@
-import { Avatar, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
+import { Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
+import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "expo-router"
 import { ChevronRight } from "lucide-react-native"
 
@@ -38,10 +39,11 @@ export default function ChatListScreen() {
 							space="md"
 							className="items-center flex-1"
 						>
-							<Avatar
-								source={{ uri: chat.avatar }}
-								size="md"
-							/>
+							<Avatar>
+								<AvatarFallbackText>{chat.name}</AvatarFallbackText>
+								<AvatarImage source={{ uri: chat.avatar }} />
+							</Avatar>
+
 							<VStack className="flex-1">
 								<Text
 									size="md"

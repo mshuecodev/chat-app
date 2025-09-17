@@ -1,4 +1,5 @@
-import { Avatar, Button, ButtonText, Divider, HStack, Input, InputField, Text, VStack } from "@/components/ui"
+import { Button, ButtonText, Divider, HStack, Input, InputField, Text, VStack } from "@/components/ui"
+import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
 import { useState } from "react"
 
 const DUMMY_CONTACTS = [
@@ -54,13 +55,13 @@ export default function ContactsScreen() {
 						<HStack
 							key={contact.id}
 							space="md"
-							alignItems="center"
-							className="bg-background-50 rounded-2xl p-4 border border-background-200 shadow-[0_2px_6px_rgba(0,0,0,0.05)] active:bg-background-100"
+							// alignItems="center"
+							className="item-center bg-background-50 rounded-2xl p-4 border border-background-200 shadow-[0_2px_6px_rgba(0,0,0,0.05)] active:bg-background-100"
 						>
-							<Avatar
-								source={{ uri: contact.avatar }}
-								size="md"
-							/>
+							<Avatar>
+								<AvatarFallbackText>SS</AvatarFallbackText>
+								<AvatarImage source={{ uri: contact.avatar }} />
+							</Avatar>
 
 							<VStack className="flex-1">
 								<Text
