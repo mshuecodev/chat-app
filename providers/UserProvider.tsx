@@ -1,10 +1,10 @@
 import { getAllProfiles } from "@/lib/api/user"
-import type { User } from "@/lib/types"
+import type { Profiles } from "@/lib/types"
 import React, { createContext, useCallback, useContext, useState } from "react"
 
 type UserContextValue = {
-	users: User[] | null
-	selectedUser: User | null
+	users: Profiles[] | null
+	selectedUser: Profiles | null
 	loading: boolean
 	error: string | null
 	fetchUsers: (params?: { page?: number; limit?: number; search?: string }) => Promise<void>
@@ -17,8 +17,8 @@ type UserContextValue = {
 const UserContext = createContext<UserContextValue | null>(null)
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-	const [users, setUsers] = useState<User[] | null>(null)
-	const [selectedUser, setSelectedUser] = useState<User | null>(null)
+	const [users, setUsers] = useState<Profiles[] | null>(null)
+	const [selectedUser, setSelectedUser] = useState<Profiles | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 

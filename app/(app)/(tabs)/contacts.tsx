@@ -1,23 +1,61 @@
 import { Button, ButtonText, Divider, HStack, Input, InputField, Text, VStack } from "@/components/ui"
 import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
+import type { Profiles } from "@/lib/types"
 import { useUser } from "@/providers/UserProvider"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
-const DUMMY_CONTACTS = [
-	{ id: 1, name: "Gabrial", email: "gabrial@gmail.com", avatar: "https://i.pravatar.cc/150?img=1" },
-	{ id: 2, name: "Tom", email: "tom@gmail.com", avatar: "https://i.pravatar.cc/150?img=2" },
-	{ id: 3, name: "Thomas", email: "thomas@gmail.com", avatar: "https://i.pravatar.cc/150?img=3" }
-]
+function ContactItem({ contact }: { contact: Profiles }) {
+	return (
+		<HStack
+			key={contact.id}
+			space="md"
+			className="items-center bg-background-50 rounded-2xl p-4 border border-background-200 shadow-[0_2px_6px_rgba(0,0,0,0.05)] active:bg-background-100"
+		>
+			<Avatar>
+				<AvatarFallbackText>{contact.display_name?.slice(0, 2).toUpperCase()}</AvatarFallbackText>
+				{contact.avatar_url && <AvatarImage source={{ uri: contact.avatar_url }} />}
+			</Avatar>
+
+			<VStack className="flex-1">
+				<Text
+					size="lg"
+					className="font-semibold"
+				>
+					{contact.display_name}
+				</Text>
+				<Text
+					size="sm"
+					className="text-background-600"
+				>
+					{contact.email}
+				</Text>
+			</VStack>
+
+			<Button
+				size="sm"
+				className="rounded-full bg-[#E53935]"
+			>
+				<ButtonText className="text-white">Message</ButtonText>
+			</Button>
+		</HStack>
+	)
+}
 
 export default function ContactsScreen() {
 	const [search, setSearch] = useState("")
-	const { users, loading, fetchUsers } = useUser()
+	const { users, loading, error, fetchUsers } = useUser()
 
-	const filteredContacts = DUMMY_CONTACTS.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()))
+	console.log("Users in ContactsScreen:", users)
 
 	useEffect(() => {
 		fetchUsers()
-	}, [])
+	}, [fetchUsers])
+
+	const filteredContacts = useMemo(() => {
+		if (!users) return []
+		return users.filter((c) => c.display_name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase()))
+	}, [users, search])
+
 	return (
 		<VStack className="flex-1 bg-background-50">
 			{/* Header */}
@@ -43,55 +81,46 @@ export default function ContactsScreen() {
 
 			<Divider />
 
-			{/* Contacts list */}
+			{/* Content */}
 			<VStack
 				className="flex-1 px-4 py-2"
 				space="md"
 			>
-				{filteredContacts.length === 0 ? (
+				{loading && (
+					<Text
+						size="md"
+						className="text-background-600 text-center mt-10"
+					>
+						Loading contacts...
+					</Text>
+				)}
+
+				{error && (
+					<Text
+						size="md"
+						className="text-red-500 text-center mt-10"
+					>
+						Failed to load contacts.
+					</Text>
+				)}
+
+				{!loading && !error && filteredContacts.length === 0 && (
 					<Text
 						size="md"
 						className="text-background-600 text-center mt-10"
 					>
 						No contacts found.
 					</Text>
-				) : (
-					filteredContacts.map((contact) => (
-						<HStack
-							key={contact.id}
-							space="md"
-							// alignItems="center"
-							className="item-center bg-background-50 rounded-2xl p-4 border border-background-200 shadow-[0_2px_6px_rgba(0,0,0,0.05)] active:bg-background-100"
-						>
-							<Avatar>
-								<AvatarFallbackText>SS</AvatarFallbackText>
-								<AvatarImage source={{ uri: contact.avatar }} />
-							</Avatar>
-
-							<VStack className="flex-1">
-								<Text
-									size="lg"
-									className="font-semibold"
-								>
-									{contact.name}
-								</Text>
-								<Text
-									size="sm"
-									className="text-background-600"
-								>
-									{contact.email}
-								</Text>
-							</VStack>
-
-							<Button
-								size="sm"
-								className="rounded-full bg-[#E53935]"
-							>
-								<ButtonText className="text-white">Message</ButtonText>
-							</Button>
-						</HStack>
-					))
 				)}
+
+				{!loading &&
+					!error &&
+					filteredContacts.map((contact) => (
+						<ContactItem
+							key={contact.id}
+							contact={contact}
+						/>
+					))}
 			</VStack>
 		</VStack>
 	)
