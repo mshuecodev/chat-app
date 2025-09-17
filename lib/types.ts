@@ -15,6 +15,14 @@ export type Profiles = {
 	email: string
 }
 
+export type Conversations = {
+	id: string
+	is_group: boolean
+	title: string
+	created_by: string
+	created_at: Date
+}
+
 export type AuthTokens = {
 	accessToken: string
 	refreshToken: string
