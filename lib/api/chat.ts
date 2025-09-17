@@ -7,19 +7,18 @@ export type ConversationQuery = {
 	search?: string
 }
 
-export const conversationService = {
-	async getConversations(params?: ConversationQuery): Promise<Conversations[]> {
-		const res = await api.get<{ conversation: Conversations[] }>("/sb/conversation", { params })
-		return res.data.conversation
-	},
+export async function getConversations(params?: ConversationQuery): Promise<Conversations[]> {
+	const res = await api.get<{ conversation: Conversations[] }>("/sb/conversation", { params })
+	console.log("Fetched conversations:", res.data, res.data.conversation)
+	return res.data.conversation
+}
 
-	async createConversation(payload: Partial<Conversations>): Promise<Conversations> {
-		const res = await api.post<Conversations>("/sb/conversation", payload)
-		return res.data
-	},
+export async function createConversation(payload: Partial<Conversations>): Promise<Conversations> {
+	const res = await api.post<Conversations>("/sb/conversation", payload)
+	return res.data
+}
 
-	async signAttachmentUrl(id: string, payload: { fileName: string; fileType: string }) {
-		const res = await api.post<{ url: string }>(`/sb/conversation/${id}/attachments/sign`, payload)
-		return res.data
-	}
+export async function signAttachmentUrl(id: string, payload: { fileName: string; fileType: string }) {
+	const res = await api.post<{ url: string }>(`/sb/conversation/${id}/attachments/sign`, payload)
+	return res.data
 }

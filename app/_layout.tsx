@@ -3,12 +3,15 @@ import { ThemeProvider as AppThemeProvider, useTheme } from "@/providers/ThemePr
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
 // import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
 import { Providers } from "@/providers/index"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import { Slot } from "expo-router"
 import "react-native-reanimated"
 import "../global.css"
 
 import { useColorScheme } from "@/hooks/useColorScheme"
+// Create a client
+const queryClient = new QueryClient()
 
 function ThemedProviders({ children }: { children: React.ReactNode }) {
 	const { darkMode } = useTheme()
@@ -34,9 +37,11 @@ export default function RootLayout() {
 	return (
 		<AppThemeProvider>
 			<ThemedProviders>
-				<Providers>
-					<Slot />
-				</Providers>
+				<QueryClientProvider client={queryClient}>
+					<Providers>
+						<Slot />
+					</Providers>
+				</QueryClientProvider>
 			</ThemedProviders>
 		</AppThemeProvider>
 	)

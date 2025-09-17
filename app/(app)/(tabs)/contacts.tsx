@@ -45,8 +45,6 @@ export default function ContactsScreen() {
 	const [search, setSearch] = useState("")
 	const { users, loading, error, fetchUsers } = useUser()
 
-	console.log("Users in ContactsScreen:", users)
-
 	useEffect(() => {
 		fetchUsers()
 	}, [fetchUsers])

@@ -1,6 +1,5 @@
-import { AuthTokens, User } from "@/lib/types"
-// Attach access token to every request if available
 import { api } from "@/lib/api"
+import { AuthTokens, User } from "@/lib/types"
 
 export type AuthPayload = { email: string; password: string }
 export type SignUpResponse = {
