@@ -1,10 +1,37 @@
 import { Button, ButtonText, Divider, HStack, Input, InputField, Text, VStack } from "@/components/ui"
 import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
+import { createConversation } from "@/lib/api/chat"
 import type { Profiles } from "@/lib/types"
+import { useAuth } from "@/providers/AuthProvider"
 import { useUser } from "@/providers/UserProvider"
+import { useRouter } from "expo-router"
 import { useEffect, useMemo, useState } from "react"
 
 function ContactItem({ contact }: { contact: Profiles }) {
+	const [loading, setLoading] = useState(false)
+	const router = useRouter()
+	const { user } = useAuth()
+
+	const handleMessage = async () => {
+		try {
+			setLoading(true)
+
+			// 👇 payload depends on your schema. Example: participants array
+			const newConv = await createConversation({
+				created_by: user?.id,
+				memberIds: [contact?.id]
+			})
+
+			// ✅ Navigate to new conversation
+			router.push(`/chat/${newConv.id}`)
+		} catch (err) {
+			console.error("Failed to create conversation:", err)
+			// (Optional) show toast or alert here
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	return (
 		<HStack
 			key={contact.id}
@@ -34,6 +61,7 @@ function ContactItem({ contact }: { contact: Profiles }) {
 			<Button
 				size="sm"
 				className="rounded-full bg-[#E53935]"
+				onPress={handleMessage}
 			>
 				<ButtonText className="text-white">Message</ButtonText>
 			</Button>

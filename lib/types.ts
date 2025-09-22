@@ -21,6 +21,7 @@ export type Conversations = {
 	title: string
 	created_by: string
 	created_at: Date
+	memberIds: string[]
 }
 
 export type AuthTokens = {

@@ -81,6 +81,7 @@ export default function ChatListScreen() {
 			{!conversations || conversations.length === 0 ? <NotFoundComponent /> : null}
 			<Fab
 				size="lg"
+				onPress={() => router.replace("/contacts")}
 				className="bg-primary-600 hover:bg-primary-700 active:bg-primary-800 mb-20 mx-5"
 			>
 				<FabIcon as={EditIcon} />
