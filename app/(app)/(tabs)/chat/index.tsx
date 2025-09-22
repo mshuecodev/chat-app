@@ -1,5 +1,8 @@
+import NotFoundComponent from "@/components/NotFound"
 import { Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
 import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
+import { Fab, FabIcon } from "@/components/ui/fab"
+import { EditIcon } from "@/components/ui/icon"
 import { useConversations } from "@/hooks/useConversations"
 import { useRouter } from "expo-router"
 import { ChevronRight } from "lucide-react-native"
@@ -12,7 +15,8 @@ const ACTIVE_CHATS = [
 export default function ChatListScreen() {
 	const router = useRouter()
 	const { data: conversations, isLoading, error } = useConversations({ page: 1, limit: 20 })
-	console.log("check", conversations)
+
+	console.log("data", conversations)
 
 	if (isLoading) return <Text>Loading...</Text>
 	if (error) return <Text>Error loading conversations</Text>
@@ -32,7 +36,7 @@ export default function ChatListScreen() {
 
 			{/* Chat List */}
 			<VStack
-				className="px-4"
+				className="px-4 "
 				space="md"
 			>
 				{conversations?.map((chat) => (
@@ -74,6 +78,13 @@ export default function ChatListScreen() {
 					</Pressable>
 				))}
 			</VStack>
+			{!conversations || conversations.length === 0 ? <NotFoundComponent /> : null}
+			<Fab
+				size="lg"
+				className="bg-primary-600 hover:bg-primary-700 active:bg-primary-800 mb-20 mx-5"
+			>
+				<FabIcon as={EditIcon} />
+			</Fab>
 		</VStack>
 	)
 }

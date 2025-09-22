@@ -2,11 +2,14 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
 import { ThemeProvider as AppThemeProvider, useTheme } from "@/providers/ThemeProvider"
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
 // import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
+import { Fab, FabIcon } from "@/components/ui/fab"
+import { MoonIcon, SunIcon } from "@/components/ui/icon"
 import { Providers } from "@/providers/index"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
-import { Slot } from "expo-router"
+import { Slot, usePathname } from "expo-router"
 import "react-native-reanimated"
+
 import "../global.css"
 
 import { useColorScheme } from "@/hooks/useColorScheme"
@@ -24,6 +27,8 @@ function ThemedProviders({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
+	const pathname = usePathname()
+	const { darkMode, toggleTheme } = useTheme()
 	const [loaded] = useFonts({
 		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf")
 	})
@@ -40,6 +45,15 @@ export default function RootLayout() {
 				<QueryClientProvider client={queryClient}>
 					<Providers>
 						<Slot />
+						{pathname === "/" && (
+							<Fab
+								onPress={toggleTheme}
+								className="m-6"
+								size="lg"
+							>
+								<FabIcon as={darkMode ? MoonIcon : SunIcon} />
+							</Fab>
+						)}
 					</Providers>
 				</QueryClientProvider>
 			</ThemedProviders>

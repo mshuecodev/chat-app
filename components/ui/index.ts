@@ -11,7 +11,7 @@ export * from "./button"
 // export * from "./center"
 export * from "./checkbox"
 export * from "./divider"
-// export * from "./fab"
+export * from "./fab"
 // export * from './flat-list';
 export * from "./form-control"
 export * from "./gluestack-ui-provider"

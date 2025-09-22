@@ -8,9 +8,9 @@ export type ConversationQuery = {
 }
 
 export async function getConversations(params?: ConversationQuery): Promise<Conversations[]> {
-	const res = await api.get<{ conversation: Conversations[] }>("/sb/conversation", { params })
-	console.log("Fetched conversations:", res.data, res.data.conversation)
-	return res.data.conversation
+	const res = await api.get<{ conversations: Conversations[] }>("/sb/conversation", { params })
+	console.log("Fetched conversations:", res.data, res.data.conversations)
+	return res.data?.conversations
 }
 
 export async function createConversation(payload: Partial<Conversations>): Promise<Conversations> {

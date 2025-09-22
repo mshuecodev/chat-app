@@ -64,7 +64,12 @@ const LoginWithBottomCard = () => {
 			
 			p-6 rounded-t-3xl shadow-lg space-y-6"
 				>
-					<Heading size="lg">Login</Heading>
+					<Heading
+						size="lg"
+						className="text-primary"
+					>
+						Login
+					</Heading>
 
 					{/* Email */}
 					<FormControl>
