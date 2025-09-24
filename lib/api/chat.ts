@@ -1,5 +1,5 @@
 import { api } from "@/lib/api"
-import { Conversations, GetMessagesResponse } from "@/lib/types"
+import { Conversations, GetMessagesResponse, Messages } from "@/lib/types"
 
 export type ConversationQuery = {
 	page?: number
@@ -25,5 +25,10 @@ export async function signAttachmentUrl(id: string, payload: { fileName: string;
 export async function getMessages(convoId: string): Promise<GetMessagesResponse> {
 	const res = await api.get<GetMessagesResponse>(`/sb/chat/${convoId}`)
 	// console.log("get messages:", res.data)
+	return res.data
+}
+
+export async function sendMessage(payload: Partial<Messages>): Promise<Messages> {
+	const res = await api.post<Messages>("/sb/chat", payload)
 	return res.data
 }

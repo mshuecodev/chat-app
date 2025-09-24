@@ -32,6 +32,7 @@ export type Messages = {
 	body: string
 	created_at: Date
 	sender: Profiles
+	conversationId: string
 }
 
 export type GetMessagesResponse = {

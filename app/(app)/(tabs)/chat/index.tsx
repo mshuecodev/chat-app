@@ -1,6 +1,5 @@
 import NotFoundComponent from "@/components/NotFound"
-import { Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
-import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallbackText, AvatarImage, Divider, HStack, Icon, Pressable, Text, VStack } from "@/components/ui"
 import { Fab, FabIcon } from "@/components/ui/fab"
 import { EditIcon } from "@/components/ui/icon"
 import { useConversations } from "@/hooks/useConversations"
@@ -16,7 +15,7 @@ export default function ChatListScreen() {
 	const router = useRouter()
 	const { data: conversations, isLoading, error } = useConversations({ page: 1, limit: 20 })
 
-	console.log("data", conversations)
+	console.log("list chat screen here", conversations, conversations?.length)
 
 	if (isLoading) return <Text>Loading...</Text>
 	if (error) return <Text>Error loading conversations</Text>
@@ -66,7 +65,7 @@ export default function ChatListScreen() {
 									className="text-background-600"
 									numberOfLines={1}
 								>
-									{chat?.lastMessage || ""}
+									{chat?.lastMessage?.body || ""}
 								</Text>
 							</VStack>
 						</HStack>
