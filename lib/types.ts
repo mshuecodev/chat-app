@@ -19,9 +19,24 @@ export type Conversations = {
 	id: string
 	is_group: boolean
 	title: string
+	avatar: string
+	lastMessage: string
 	created_by: string
 	created_at: Date
 	memberIds: string[]
+	profile: Profiles
+}
+
+export type Messages = {
+	id: string
+	body: string
+	created_at: Date
+	sender: Profiles
+}
+
+export type GetMessagesResponse = {
+	conversation: Conversations
+	messages: Messages[]
 }
 
 export type AuthTokens = {

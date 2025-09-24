@@ -1,78 +1,64 @@
-import { Avatar, Button, ButtonText, HStack, Icon, Input, InputField, Pressable, Text, VStack } from "@/components/ui"
+import { Button, ButtonText, HStack, Icon, Input, InputField, Pressable, Text, VStack } from "@/components/ui"
+import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar"
+import { getMessages } from "@/lib/api/chat"
+import { useFocusEffect } from "@react-navigation/native"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { ArrowLeft } from "lucide-react-native"
-import { Key, useState } from "react"
-
-type Message = {
-	id: number
-	sender: string
-	text: string
-	avatar: string
-}
-
-const DUMMY_MESSAGES: Record<string, Message[]> = {
-	"1": [
-		{
-			id: 1,
-			sender: "Gabrial",
-			text: "Hi there!",
-			avatar: "https://i.pravatar.cc/150?img=1"
-		},
-		{
-			id: 2,
-			sender: "You",
-			text: "Hello Gabrial!",
-			avatar: "https://i.pravatar.cc/150?img=3"
-		}
-	],
-	"2": [
-		{
-			id: 1,
-			sender: "Tom",
-			text: "Hello!",
-			avatar: "https://i.pravatar.cc/150?img=2"
-		},
-		{
-			id: 2,
-			sender: "You",
-			text: "Hi Tom!",
-			avatar: "https://i.pravatar.cc/150?img=3"
-		}
-	]
-}
+import { useCallback, useState } from "react"
 
 export default function ChatDetailScreen() {
 	const { id } = useLocalSearchParams()
 	const chatId = String(id)
 	const router = useRouter()
-	const [messages, setMessages] = useState(DUMMY_MESSAGES[chatId] || [])
+	// const [messages, setMessages] = useState<Messages[]>([])
 	const [input, setInput] = useState("")
+	// const [loading, setLoading] = useState(true)
+
+	const queryClient = useQueryClient()
+
+	// Fetch messages
+	const { data, isLoading, isError, refetch } = useQuery({
+		queryKey: ["messages", chatId],
+		queryFn: () => getMessages(chatId),
+		enabled: !!chatId // only run if chatId exists
+	})
+
+	// Refetch when screen comes back into focus
+	useFocusEffect(
+		useCallback(() => {
+			refetch()
+		}, [chatId])
+	) // Mutation for sending message
+	// const mutation = useMutation({
+	// 	mutationFn: (text: string) => sendMessage(chatId, text),
+	// 	onSuccess: (newMessage) => {
+	// 		// Update cache instantly
+	// 		queryClient.setQueryData<Messages[]>(["messages", chatId], (old = []) => [...old, newMessage])
+	// 		setInput("")
+	// 	}
+	// })
 
 	const handleSend = () => {
-		if (!input.trim()) return
-		setMessages([
-			...messages,
-			{
-				id: messages.length + 1,
-				sender: "You",
-				text: input,
-				avatar: "https://i.pravatar.cc/150?img=3"
-			}
-		])
-		setInput("")
+		// if (!input.trim()) return
+		// mutation.mutate(input)
 	}
 
+	const profile = data?.conversation?.profile
+	const messages = data?.messages
+	console.log("chatTitle", data, data?.conversation)
+
 	// Find chat partner (first non-You sender)
-	const partner = messages.find((m) => m.sender !== "You")
-	const chatTitle = partner ? partner.sender : "Chat"
-	const chatAvatar = partner ? partner.avatar : "https://i.pravatar.cc/150?img=5"
+	// const partner = messages.find((m) => m.sender !== "You")
+	const chatTitle = profile ? profile.display_name : "Chat"
+	const chatAvatar = profile ? profile.avatar_url : "https://i.pravatar.cc/150?img=5"
 
 	return (
 		<VStack className="flex-1 bg-white">
 			{/* Header */}
 			<HStack
-				className="px-4 py-3 border-b border-gray-200 bg-white"
-				alignItems="center"
+				className="px-4 py-3 border-b border-gray-200 bg-white item-center"
+				// alignItems="center"
 				space="md"
 			>
 				<Pressable onPress={() => router.back()}>
@@ -82,10 +68,11 @@ export default function ChatDetailScreen() {
 						className="text-black"
 					/>
 				</Pressable>
-				<Avatar
-					source={{ uri: chatAvatar }}
-					size="sm"
-				/>
+				<Avatar>
+					<AvatarFallbackText>{chatTitle}</AvatarFallbackText>
+					<AvatarImage source={{ uri: chatAvatar }} />
+				</Avatar>
+
 				<VStack>
 					<Text
 						size="md"
@@ -107,12 +94,12 @@ export default function ChatDetailScreen() {
 				className="flex-1 px-4 py-3"
 				space="md"
 			>
-				{messages.map((msg: { id: Key | null | undefined; sender: string; avatar: string; text: string }) => (
+				{/* {messages.map((msg: { id: Key | null | undefined; sender: string; avatar: string; text: string }) => (
 					<HStack
 						key={msg.id}
 						space="sm"
-						alignItems="center"
-						className={msg.sender === "You" ? "justify-end" : ""}
+						// alignItems="center"
+						className={`${msg.sender === "You" ? "justify-end" : ""} item-center`}
 					>
 						{msg.sender !== "You" && (
 							<Avatar
@@ -136,21 +123,21 @@ export default function ChatDetailScreen() {
 						</VStack>
 						{msg.sender === "You" && (
 							<Avatar
-								source={{ uri: msg.avatar }}
+								source={{ uri: msg?.avatar }}
 								size="sm"
 							/>
 						)}
 					</HStack>
-				))}
+				))} */}
 			</VStack>
 
 			{/* Input Area */}
 			<HStack
 				className="px-4 py-3 border-t border-gray-200"
 				space="sm"
-				alignItems="center"
+				// alignItems="center"
 			>
-				<Input className="flex-1 border border-gray-300 rounded-full px-3">
+				<Input className="flex-1 border item-center border-gray-300 rounded-full px-3">
 					<InputField
 						placeholder="Type a message..."
 						value={input}

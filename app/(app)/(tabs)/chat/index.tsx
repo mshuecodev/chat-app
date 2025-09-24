@@ -50,8 +50,8 @@ export default function ChatListScreen() {
 							className="items-center flex-1"
 						>
 							<Avatar>
-								<AvatarFallbackText>{chat.name}</AvatarFallbackText>
-								<AvatarImage source={{ uri: chat.avatar }} />
+								<AvatarFallbackText>{chat?.title}</AvatarFallbackText>
+								<AvatarImage source={{ uri: chat?.avatar }} />
 							</Avatar>
 
 							<VStack className="flex-1">
@@ -59,14 +59,14 @@ export default function ChatListScreen() {
 									size="md"
 									className="font-semibold"
 								>
-									{chat.name}
+									{chat?.title}
 								</Text>
 								<Text
 									size="sm"
 									className="text-background-600"
 									numberOfLines={1}
 								>
-									{chat.lastMessage}
+									{chat?.lastMessage || ""}
 								</Text>
 							</VStack>
 						</HStack>
